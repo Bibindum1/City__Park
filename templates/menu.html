@@ -3,15 +3,13 @@
 {% block title %}Меню • CityPark{% endblock %}
 
 {% block content %}
-
-    <style> /* ================= PREMIUM MENU GRID ================= */
+<style>
     .menu-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
         gap: 28px;
     }
 
-    /* ================= CARD ================= */
     .menu-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
@@ -33,9 +31,9 @@
         height: 240px;
         object-fit: cover;
         filter: saturate(1.05) contrast(1.05);
+        background: #111;
     }
 
-    /* ================= CONTENT ================= */
     .menu-content {
         padding: 22px;
         display: flex;
@@ -73,7 +71,6 @@
         margin: 14px 0 16px;
     }
 
-    /* ================= TAG ================= */
     .menu-category {
         display: inline-flex;
         padding: 6px 12px;
@@ -86,7 +83,6 @@
         margin-bottom: 16px;
     }
 
-    /* ================= BUTTONS ================= */
     .menu-actions {
         margin-top: auto;
         display: flex;
@@ -122,19 +118,18 @@
         box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
     }
 
-    .add-fav.active {
+    .fav-active {
         background: var(--gold-soft);
         border-color: var(--border-gold);
         color: var(--gold);
     }
 
-    /* ================= FILTERS ================= */
     .filters {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 10px;
-        margin-bottom: 42px;
+        margin-bottom: 28px;
     }
 
     .filter-btn {
@@ -148,18 +143,46 @@
         transition: 0.25s ease;
     }
 
-    .filter-btn:hover {
+    .filter-btn:hover,
+    .filter-btn.active {
         border-color: var(--gold);
         color: var(--gold);
     }
 
-    .filter-btn.active {
-        background: var(--gold);
-        color: #111;
-        border-color: var(--gold);
+    .sort-row {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 22px;
     }
 
-    /* ================= EMPTY STATE ================= */
+    .search-form {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .search-input, .sort-select {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        min-width: 240px;
+    }
+
+    .search-btn {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--gold);
+        color: #111;
+        cursor: pointer;
+    }
+
     .empty-state {
         text-align: center;
         padding: 80px 20px;
@@ -173,282 +196,161 @@
         margin-bottom: 10px;
     }
 
-    /* ================= MOBILE ================= */
     @media (max-width: 768px) {
         .menu-grid {
             grid-template-columns: 1fr;
         }
-    } </style>
+    }
+</style>
 
-    <section class="section">
-        <div class="container">
+<section class="section">
+    <div class="container">
 
-            <div class="section-title">
-                <h2>Меню ресторана</h2>
-                <p>Авторская кухня премиум уровня</p>
-            </div>
-
-            <!-- ===== SEARCH (ДОБАВЛЕНО) ===== -->
-            <form method="GET" style="margin-bottom:20px;">
-                <input type="text"
-                       name="q"
-                       value="{{ query|default:'' }}"
-                       placeholder="Поиск блюда..."
-                       style="padding:10px 14px; border-radius:10px; border:1px solid var(--border); background:var(--bg-card); color:var(--text-primary); width:260px;">
-                <button type="submit"
-                        style="padding:10px 14px; border-radius:10px; border:1px solid var(--border); background:var(--gold); color:#111;">
-                    Поиск
-                </button>
-            </form>
-
-            <!-- FILTERS (без изменений) -->
-            <div class="filters">
-                <button class="filter-btn active" data-filter="all">Все</button>
-                <button class="filter-btn" data-filter="завтраки">Завтраки</button>
-                <button class="filter-btn" data-filter="салаты">Салаты</button>
-                <button class="filter-btn" data-filter="мясо">Мясо</button>
-                <button class="filter-btn" data-filter="рыба">Рыба</button>
-                <button class="filter-btn" data-filter="десерты">Десерты</button>
-                <button class="filter-btn" data-filter="вино">Вино</button>
-            </div>
-
-            <div class="menu-grid">
-
-                {% if dishes %}
-
-                    {% for dish in dishes %}
-                        <article class="menu-card"
-                                 data-id="{{ dish.id }}"
-                                 data-name="{{ dish.name }}"
-                                 data-price="{{ dish.price }}"
-                                 data-category="{{ dish.category.name|lower }}">
-
-                            {% if dish.image %}
-                                <img src="{{ dish.image.url }}">
-                            {% endif %}
-
-                            <div class="menu-content">
-
-                                <div class="menu-header">
-                                    <div class="menu-title">{{ dish.name }}</div>
-                                    <div class="menu-price">{{ dish.price }} ₽</div>
-                                </div>
-
-                                <div class="menu-description">
-                                    {{ dish.description }}
-                                </div>
-
-                                <div class="menu-category">
-                                    {{ dish.category.name }}
-                                </div>
-
-                                <div class="menu-actions">
-                                    <button class="small-btn add-cart" onclick="addToCart({{ dish.id }})">
-                                        В корзину
-                                    </button>
-
-                                    <button class="small-btn add-fav" onclick="toggleFav({{ dish.id }})">
-                                        В избранное
-                                    </button>
-                                </div>
-
-                            </div>
-                        </article>
-                    {% endfor %}
-
-                {% else %}
-                    <div class="empty-state">
-                        <h3>Меню пустое</h3>
-                    </div>
-                {% endif %}
-
-            </div>
-
+        <div class="section-title">
+            <h2>Меню ресторана</h2>
+            <p>Авторская кухня премиум уровня</p>
         </div>
-    </section>
 
+        <form method="GET" class="search-form">
+            <input type="text"
+                   name="q"
+                   value="{{ query|default:'' }}"
+                   placeholder="Поиск блюда..."
+                   class="search-input">
+            <button type="submit" class="search-btn">Поиск</button>
+        </form>
+
+        <div class="sort-row">
+            <a href="?{% if query %}q={{ query }}&{% endif %}sort=price_asc" class="filter-btn {% if sort == 'price_asc' %}active{% endif %}">Цена ↑</a>
+            <a href="?{% if query %}q={{ query }}&{% endif %}sort=price_desc" class="filter-btn {% if sort == 'price_desc' %}active{% endif %}">Цена ↓</a>
+            <a href="?{% if query %}q={{ query }}&{% endif %}sort=name" class="filter-btn {% if sort == 'name' %}active{% endif %}">По названию</a>
+            <a href="{% url 'menu' %}" class="filter-btn">Сбросить</a>
+        </div>
+
+        <div class="filters">
+            <a class="filter-btn {% if category == 'all' or not category %}active{% endif %}" href="{% url 'menu' %}{% if query or sort %}?{% if query %}q={{ query }}&{% endif %}{% if sort %}sort={{ sort }}{% endif %}{% endif %}">Все</a>
+            {% for cat in categories %}
+                <a class="filter-btn {% if category == cat.slug %}active{% endif %}"
+                   href="?category={{ cat.slug }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
+                    {{ cat.name }}
+                </a>
+            {% endfor %}
+        </div>
+
+        <div class="menu-grid">
+            {% if dishes %}
+                {% for dish in dishes %}
+                    <article class="menu-card"
+                             data-id="{{ dish.id }}"
+                             data-name="{{ dish.name }}"
+                             data-price="{{ dish.price }}"
+                             data-category="{{ dish.category.slug }}">
+
+                        {% if dish.image %}
+                            <img src="{{ dish.image.url }}" alt="{{ dish.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/600x400?text=No+Image" alt="{{ dish.name }}">
+                        {% endif %}
+
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <div class="menu-title">{{ dish.name }}</div>
+                                <div class="menu-price">{{ dish.price }} ₽</div>
+                            </div>
+
+                            <div class="menu-description">
+                                {{ dish.description|default:"Описание пока отсутствует." }}
+                            </div>
+
+                            <div class="menu-category">
+                                {{ dish.category.name }}
+                            </div>
+
+                            <div class="menu-actions">
+                                <button type="button" class="small-btn add-cart" data-id="{{ dish.id }}">
+                                    В корзину
+                                </button>
+
+                                <button type="button"
+                                        class="small-btn fav-btn {% if dish.id in favs %}fav-active{% endif %}"
+                                        data-id="{{ dish.id }}">
+                                    В избранное
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <h3>Меню пустое</h3>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
 {% endblock %}
 
 {% block scripts %}
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const buttons = document.querySelectorAll(".filter-btn");
-            const cards = document.querySelectorAll(".menu-card");
-
-            // ===== FILTER =====
-            buttons.forEach(btn => {
-                btn.addEventListener("click", () => {
-
-                    buttons.forEach(b => b.classList.remove("active"));
-                    btn.classList.add("active");
-
-                    const filter = btn.dataset.filter.toLowerCase();
-
-                    cards.forEach(card => {
-                        const cat = (card.dataset.category || "").toLowerCase();
-
-                        card.style.display =
-                            filter === "all" || cat === filter ? "flex" : "none";
-                    });
-                });
-            });
-
-            // ===== CART =====
-            document.querySelectorAll(".add-cart").forEach(btn => {
-                btn.addEventListener("click", () => {
-
-                    const card = btn.closest(".menu-card");
-
-                    const id = card.dataset.id;
-
-                    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-                    const existing = cart.find(i => i.id === id);
-
-                    if (existing) {
-                        existing.qty += 1;
-                    } else {
-                        cart.push({
-                            id,
-                            name: card.dataset.name,
-                            price: card.dataset.price,
-                            qty: 1
-                        });
-                    }
-
-                    localStorage.setItem("cart", JSON.stringify(cart));
-
-                    btn.innerText = "Добавлено";
-                    setTimeout(() => btn.innerText = "В корзину", 900);
-                });
-            });
-
-            // ===== FAVORITES =====
-            document.querySelectorAll(".add-fav").forEach(btn => {
-
-                const card = btn.closest(".menu-card");
-                const id = card.dataset.id;
-
-                let favs = JSON.parse(localStorage.getItem("favs") || "[]");
-
-                if (favs.some(i => i.id === id)) {
-                    btn.classList.add("active");
-                }
-
-                btn.addEventListener("click", () => {
-
-                    let favs = JSON.parse(localStorage.getItem("favs") || "[]");
-
-                    const exists = favs.some(i => i.id === id);
-
-                    if (exists) {
-                        favs = favs.filter(i => i.id !== id);
-                        btn.classList.remove("active");
-                    } else {
-                        favs.push({
-                            id,
-                            name: card.dataset.name,
-                            price: card.dataset.price
-                        });
-                        btn.classList.add("active");
-                    }
-
-                    localStorage.setItem("favs", JSON.stringify(favs));
-                });
-            });
-
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie) {
+        document.cookie.split(';').forEach(c => {
+            c = c.trim();
+            if (c.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(c.substring(name.length + 1));
+            }
         });
+    }
+    return cookieValue;
+}
 
-        function updateCounters() {
-            let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-            let favs = JSON.parse(localStorage.getItem("favs") || "[]");
+function updateCounters() {
+    fetch("{% url 'cart' %}", {credentials: "same-origin"})
+        .then(() => {})
+        .catch(() => {});
+}
 
-            let cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
-
-            document.getElementById("cartCount").innerText = cartCount;
-            document.getElementById("favCount").innerText = favs.length;
-        }
-
-        updateCounters();
-    </script>
-
-    <script>
-        function addToCart(id) {
-            fetch(`/cart/add/${id}/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken")
-                }
-            })
-        }
-
-        function toggleFav(id) {
-            fetch(`/fav/toggle/${id}/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken")
-                }
-            })
-        }
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+document.querySelectorAll(".add-cart").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        fetch(`/cart/add/${id}/`, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
             }
-            return cookieValue;
-        }
-    </script>
-    <script>
-        function addToCart(id) {
-            fetch(`/cart/add/${id}/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken")
-                }
-            }).then(r => r.json())
-                .then(data => console.log("cart:", data));
-        }
+        })
+        .then(r => r.json())
+        .then(() => {
+            btn.textContent = "Добавлено";
+            setTimeout(() => btn.textContent = "В корзину", 900);
+        });
+    });
+});
 
-        function removeFromCart(id) {
-            fetch(`/cart/remove/${id}/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken")
-                }
-            }).then(r => r.json())
-                .then(data => console.log("cart:", data));
-        }
-
-        function toggleFav(id) {
-            fetch(`/fav/toggle/${id}/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken")
-                }
-            }).then(r => r.json())
-                .then(data => console.log("fav:", data));
-        }
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie) {
-                document.cookie.split(';').forEach(c => {
-                    c = c.trim();
-                    if (c.startsWith(name + '=')) {
-                        cookieValue = decodeURIComponent(c.split('=')[1]);
-                    }
-                });
+document.querySelectorAll(".fav-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        fetch(`/fav/toggle/${id}/`, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
             }
-            return cookieValue;
-        }
-    </script>
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === "added") {
+                btn.classList.add("fav-active");
+            } else {
+                btn.classList.remove("fav-active");
+            }
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", updateCounters);
+</script>
 {% endblock %}

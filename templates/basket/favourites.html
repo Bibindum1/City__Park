@@ -3,7 +3,6 @@
 {% block title %}Избранное • CityPark{% endblock %}
 
 {% block content %}
-
 <style>
 .fav-page {
     width: min(1300px, 94%);
@@ -31,7 +30,6 @@
     gap: 26px;
 }
 
-/* CARD */
 .fav-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -50,9 +48,9 @@
     width: 100%;
     height: 220px;
     object-fit: cover;
+    background: #111;
 }
 
-/* CONTENT */
 .fav-content {
     padding: 22px;
 }
@@ -83,7 +81,6 @@
     font-weight: 700;
 }
 
-/* BUTTONS */
 .btn-row {
     display: flex;
     gap: 10px;
@@ -98,6 +95,8 @@
     cursor: pointer;
     transition: 0.25s ease;
     border: none;
+    text-align: center;
+    text-decoration: none;
 }
 
 .btn-cart {
@@ -116,7 +115,6 @@
     transform: translateY(-2px);
 }
 
-/* EMPTY STATE */
 .fav-empty {
     text-align: center;
     padding: 80px 20px;
@@ -134,7 +132,6 @@
     margin-bottom: 10px;
 }
 
-/* CTA */
 .fav-cta {
     text-align: center;
     margin-top: 50px;
@@ -149,13 +146,13 @@
     font-weight: 600;
     box-shadow: var(--shadow-gold);
     transition: 0.25s ease;
+    text-decoration: none;
 }
 
 .fav-cta a:hover {
     transform: translateY(-2px);
 }
 
-/* MOBILE */
 @media (max-width: 768px) {
     .btn-row {
         flex-direction: column;
@@ -164,114 +161,77 @@
 </style>
 
 <section class="fav-page">
-
     <h1 class="fav-title">Избранное</h1>
     <p class="fav-subtitle">Ваши сохранённые блюда и вина</p>
 
-    <div id="favorite-items" class="fav-grid"></div>
+    {% if dishes %}
+        <div class="fav-grid">
+            {% for dish in dishes %}
+                <div class="fav-card">
+                    {% if dish.image %}
+                        <img src="{{ dish.image.url }}" alt="{{ dish.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400" alt="{{ dish.name }}">
+                    {% endif %}
 
-    <div id="empty-fav" class="fav-empty" style="display:none;">
-        <h2>Пока пусто 🤍</h2>
-        <p>Добавляйте блюда в избранное, чтобы не потерять их</p>
-    </div>
+                    <div class="fav-content">
+                        <div class="fav-name">{{ dish.name }}</div>
+                        <div class="fav-desc">Авторское блюдо от шефа</div>
+
+                        <div class="fav-bottom">
+                            <div class="fav-price">{{ dish.price }} ₽</div>
+                        </div>
+
+                        <div class="btn-row">
+                            <button class="btn btn-cart" onclick="addToCart({{ dish.id }})">В корзину</button>
+                            <button class="btn btn-remove" onclick="toggleFav({{ dish.id }})">Удалить</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="fav-empty">
+            <h2>Пока пусто 🤍</h2>
+            <p>Добавляйте блюда в избранное, чтобы не потерять их</p>
+        </div>
+    {% endif %}
 
     <div class="fav-cta">
-        <a href="{% url 'index' %}#menu">Перейти в меню</a>
+        <a href="{% url 'menu' %}#menu">Перейти в меню</a>
     </div>
-
 </section>
 
 <script>
-function loadFavorites() {
-
-    let fav = JSON.parse(localStorage.getItem('favorites') || '[]');
-
-    const container = document.getElementById('favorite-items');
-    const empty = document.getElementById('empty-fav');
-
-    if (fav.length === 0) {
-        container.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-    }
-
-    empty.style.display = 'none';
-    container.innerHTML = '';
-
-    fav.forEach((item, i) => {
-
-        const card = document.createElement('div');
-
-        card.innerHTML = `
-            <div class="fav-card">
-
-                <img src="${item.image || 'https://via.placeholder.com/400'}">
-
-                <div class="fav-content">
-
-                    <div class="fav-name">${item.name}</div>
-
-                    <div class="fav-desc">
-                        Авторское блюдо от шефа
-                    </div>
-
-                    <div class="fav-bottom">
-                        <div class="fav-price">${item.price} ₽</div>
-                    </div>
-
-                    <div class="btn-row">
-
-                        <button class="btn btn-cart"
-                            onclick="toCart(${i})">
-                            В корзину
-                        </button>
-
-                        <button class="btn btn-remove"
-                            onclick="removeFav(${i})">
-                            Удалить
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-        `;
-
-        container.appendChild(card);
+function getCookie(name) {
+    let v = null;
+    document.cookie.split(";").forEach(c => {
+        c = c.trim();
+        if (c.startsWith(name + "=")) {
+            v = decodeURIComponent(c.split("=")[1]);
+        }
     });
+    return v;
 }
 
-function toCart(i) {
-
-    let fav = JSON.parse(localStorage.getItem('favorites') || '[]');
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-
-    cart.push({
-        name: fav[i].name,
-        price: fav[i].price,
-        image: fav[i].image,
-        quantity: 1
-    });
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-
-    alert("Добавлено в корзину");
+function addToCart(id) {
+    fetch(`/cart/add/${id}/`, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        }
+    }).then(() => location.reload());
 }
 
-function removeFav(i) {
-
-    let fav = JSON.parse(localStorage.getItem('favorites') || '[]');
-
-    fav.splice(i, 1);
-
-    localStorage.setItem('favorites', JSON.stringify(fav));
-
-    loadFavorites();
+function toggleFav(id) {
+    fetch(`/fav/toggle/${id}/`, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        }
+    }).then(() => location.reload());
 }
-
-loadFavorites();
-updateCounters();
 </script>
-
 {% endblock %}

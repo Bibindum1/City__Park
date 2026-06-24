@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models, IntegrityError, transaction
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -102,7 +103,7 @@ class Order(models.Model):
         return f"Заказ #{self.pk}"
 
     def update_total(self, save=True):
-        total = sum(item.total_price for item in self.items.all())
+        total = sum((item.total_price for item in self.items.all()), Decimal("0.00"))
         self.total = total
         if save:
             self.save(update_fields=["total"])

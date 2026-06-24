@@ -3,260 +3,264 @@
 {% block title %}Корзина • CityPark{% endblock %}
 
 {% block content %}
+<style>
+    .cart-page {
+        padding: 80px 0;
+    }
 
-    <style>
-        .cart-page {
-            padding: 80px 0;
-        }
+    .cart-title {
+        text-align: center;
+        font-family: "Playfair Display", serif;
+        font-size: clamp(40px, 5vw, 56px);
+        color: var(--gold);
+        margin-bottom: 50px;
+    }
 
-        .cart-title {
-            text-align: center;
-            font-family: "Playfair Display", serif;
-            font-size: clamp(40px, 5vw, 56px);
-            color: var(--gold);
-            margin-bottom: 50px;
-        }
+    .cart-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 36px;
+        padding: 40px;
+        box-shadow: var(--shadow-soft);
+    }
 
-        .cart-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 36px;
-            padding: 40px;
-            box-shadow: var(--shadow-soft);
-        }
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border);
+    }
 
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 24px;
-            padding: 24px 0;
-            border-bottom: 1px solid var(--border);
-        }
+    .cart-left {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
 
-        .cart-left {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
+    .cart-image {
+        width: 88px;
+        height: 88px;
+        border-radius: 18px;
+        object-fit: cover;
+        border: 1px solid var(--border);
+        background: #111;
+    }
 
-        .cart-image {
-            width: 88px;
-            height: 88px;
-            border-radius: 18px;
-            object-fit: cover;
-            border: 1px solid var(--border);
-            background: #111;
-        }
+    .cart-info h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 20px;
+        margin-bottom: 6px;
+        color: var(--text-primary);
+    }
 
-        .cart-info h3 {
-            font-family: "Playfair Display", serif;
-            font-size: 20px;
-            margin-bottom: 6px;
-            color: var(--text-primary);
-        }
+    .cart-info p {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
 
-        .cart-info p {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
+    .qty {
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+    }
 
-        .qty {
-            display: flex;
-            align-items: center;
-            border: 1px solid var(--border);
-            border-radius: 999px;
-            overflow: hidden;
-        }
+    .qty button {
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: none;
+        color: var(--gold);
+        cursor: pointer;
+    }
 
-        .qty button {
-            width: 40px;
-            height: 40px;
-            background: transparent;
-            border: none;
-            color: var(--gold);
-            cursor: pointer;
-        }
+    .qty span {
+        width: 42px;
+        text-align: center;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
 
-        .qty span {
-            width: 42px;
-            text-align: center;
-            color: var(--text-primary);
-            font-weight: 600;
-        }
+    .price {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--gold);
+        min-width: 120px;
+        text-align: right;
+    }
 
-        .price {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--gold);
-            min-width: 120px;
-            text-align: right;
-        }
+    .remove {
+        border: 1px solid rgba(255, 80, 80, 0.25);
+        background: rgba(255, 80, 80, 0.08);
+        color: #ff7a7a;
+        padding: 10px 14px;
+        border-radius: 12px;
+        cursor: pointer;
+    }
 
-        .remove {
-            border: 1px solid rgba(255, 80, 80, 0.25);
-            background: rgba(255, 80, 80, 0.08);
-            color: #ff7a7a;
-            padding: 10px 14px;
-            border-radius: 12px;
-            cursor: pointer;
-        }
+    .cart-bottom {
+        margin-top: 35px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
 
-        .cart-bottom {
-            margin-top: 35px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+    .total h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 42px;
+        color: var(--gold);
+        margin-top: 6px;
+    }
 
-        .total h2 {
-            font-family: "Playfair Display", serif;
-            font-size: 42px;
-            color: var(--gold);
-            margin-top: 6px;
-        }
+    .btn {
+        padding: 14px 26px;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+    }
 
-        .btn {
-            padding: 14px 26px;
-            border-radius: 999px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-        }
+    .btn-primary {
+        background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
+        color: #0a0a0a;
+    }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
-            color: #0a0a0a;
-        }
+    .btn-outline {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+    }
 
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-        }
+    .btn-danger {
+        background: rgba(255, 80, 80, 0.08);
+        border: 1px solid rgba(255, 80, 80, 0.25);
+        color: #ff7a7a;
+    }
 
-        .btn-danger {
-            background: rgba(255, 80, 80, 0.08);
-            border: 1px solid rgba(255, 80, 80, 0.25);
-            color: #ff7a7a;
-        }
+    .empty {
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--text-muted);
+    }
 
-        .empty {
-            text-align: center;
-            padding: 80px 20px;
-            color: var(--text-muted);
-        }
+    .empty h2 {
+        font-family: "Playfair Display", serif;
+        color: var(--gold);
+        font-size: 34px;
+    }
+</style>
 
-        .empty h2 {
-            font-family: "Playfair Display", serif;
-            color: var(--gold);
-            font-size: 34px;
-        }
-    </style>
+<section class="cart-page">
+    <div class="container">
+        <div class="cart-title">Ваша корзина</div>
 
-    <section class="cart-page">
-        <div class="container">
-            <div class="cart-title">Ваша корзина</div>
-
-            <div class="cart-box">
-                {% if items %}
-                    {% for item in items %}
-                        <div class="cart-item">
-                            <div class="cart-left">
-                                <img class="cart-image" src="{{ item.dish.image.url }}" alt="">
-                                <div class="cart-info">
-                                    <h3>{{ item.dish.name }}</h3>
-                                    <p>{{ item.dish.price }} ₽ / шт</p>
-                                </div>
+        <div class="cart-box">
+            {% if items %}
+                {% for item in items %}
+                    <div class="cart-item">
+                        <div class="cart-left">
+                            {% if item.dish.image %}
+                                <img class="cart-image" src="{{ item.dish.image.url }}" alt="{{ item.dish.name }}">
+                            {% else %}
+                                <div class="cart-image"></div>
+                            {% endif %}
+                            <div class="cart-info">
+                                <h3>{{ item.dish.name }}</h3>
+                                <p>{{ item.dish.price }} ₽ / шт</p>
                             </div>
-
-                            <div class="qty">
-                                <button onclick="changeQty({{ item.dish.id }}, -1)">−</button>
-                                <span>{{ item.qty }}</span>
-                                <button onclick="changeQty({{ item.dish.id }}, 1)">+</button>
-                            </div>
-
-                            <div class="price">{{ item.sum }} ₽</div>
-
-                            <button class="remove" onclick="changeQty({{ item.dish.id }}, -1)">✕</button>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="empty">
-                        <h2>Корзина пуста</h2>
-                        <p>Добавьте блюда из меню</p>
-                    </div>
-                {% endif %}
 
-                <div class="cart-bottom">
-                    <div class="total">
-                        <div>Общая сумма</div>
-                        <h2>{{ total_sum }} ₽</h2>
-                    </div>
+                        <div class="qty">
+                            <button onclick="changeQty({{ item.dish.id }}, -1)">−</button>
+                            <span>{{ item.qty }}</span>
+                            <button onclick="changeQty({{ item.dish.id }}, 1)">+</button>
+                        </div>
 
-                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                        <button onclick="clearCart()" class="btn btn-danger">Очистить</button>
-                        <a href="{% url 'menu' %}" class="btn btn-outline">Продолжить</a>
+                        <div class="price">{{ item.sum }} ₽</div>
+
+                        <button class="remove" onclick="changeQty({{ item.dish.id }}, -1)">✕</button>
                     </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty">
+                    <h2>Корзина пуста</h2>
+                    <p>Добавьте блюда из меню</p>
+                </div>
+            {% endif %}
+
+            <div class="cart-bottom">
+                <div class="total">
+                    <div>Общая сумма</div>
+                    <h2>{{ total_sum }} ₽</h2>
+                </div>
+
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <button onclick="clearCart()" class="btn btn-danger">Очистить</button>
+                    <a href="{% url 'menu' %}" class="btn btn-outline">Продолжить</a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <script>
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.textContent = msg;
-            t.style.position = "fixed";
-            t.style.bottom = "20px";
-            t.style.left = "50%";
-            t.style.transform = "translateX(-50%)";
-            t.style.background = "var(--bg-card)";
-            t.style.border = "1px solid var(--border)";
-            t.style.padding = "12px 20px";
-            t.style.borderRadius = "999px";
-            t.style.zIndex = "9999";
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 2000);
-        }
+<script>
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.style.position = "fixed";
+        t.style.bottom = "20px";
+        t.style.left = "50%";
+        t.style.transform = "translateX(-50%)";
+        t.style.background = "var(--bg-card)";
+        t.style.border = "1px solid var(--border)";
+        t.style.padding = "12px 20px";
+        t.style.borderRadius = "999px";
+        t.style.zIndex = "9999";
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2000);
+    }
 
-        function changeQty(id, d) {
-            const url = d > 0 ? `/cart/add/${id}/` : `/cart/remove/${id}/`;
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken")
-                }
-            })
-                .then(() => location.reload())
-                .catch(() => showToast("Ошибка"));
-        }
+    function changeQty(id, d) {
+        const url = d > 0 ? `/cart/add/${id}/` : `/cart/remove/${id}/`;
+        fetch(url, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            }
+        })
+            .then(() => location.reload())
+            .catch(() => showToast("Ошибка"));
+    }
 
-        function clearCart() {
-            fetch("/cart/clear/", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken")
-                }
-            })
-                .then(() => location.reload())
-                .catch(() => showToast("Ошибка"));
-        }
+    function clearCart() {
+        fetch("/cart/clear/", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            }
+        })
+            .then(() => location.reload())
+            .catch(() => showToast("Ошибка"));
+    }
 
-        function getCookie(name) {
-            let v = null;
-            document.cookie.split(";").forEach(c => {
-                c = c.trim();
-                if (c.startsWith(name + "=")) {
-                    v = decodeURIComponent(c.split("=")[1]);
-                }
-            });
-            return v;
-        }
-    </script>
-
+    function getCookie(name) {
+        let v = null;
+        document.cookie.split(";").forEach(c => {
+            c = c.trim();
+            if (c.startsWith(name + "=")) {
+                v = decodeURIComponent(c.split("=")[1]);
+            }
+        });
+        return v;
+    }
+</script>
 {% endblock %}

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from .models import Category, Dish, Order, OrderItem
 
@@ -18,7 +18,7 @@ def basket_view(request):
     cart = request.session.get("cart", {})
 
     total = sum(
-        float(item["price"]) * item["quantity"]
+        Decimal(item["price"]) * Decimal(str(item["quantity"]))
         for item in cart.values()
     )
 
@@ -27,8 +27,10 @@ def basket_view(request):
         "total": total,
     })
 
+
 def favourites_view(request, dish_id):
     fav = request.session.get("fav", [])
+    dish_id = int(dish_id)
 
     if dish_id in fav:
         fav.remove(dish_id)
@@ -39,6 +41,7 @@ def favourites_view(request, dish_id):
     request.session.modified = True
 
     return JsonResponse({"status": "ok"})
+
 
 def index(request):
     dishes = (
@@ -93,36 +96,35 @@ def checkout(request):
     if not isinstance(cart, list) or not cart:
         return JsonResponse({"status": "empty"})
 
-    order = Order.objects.create(
-        user=request.user if request.user.is_authenticated else None,
-        total=Decimal("0.00"),
-    )
-
-    total = Decimal("0.00")
+    valid_items = []
 
     for item in cart:
         try:
             name = item["name"].strip()
             price = Decimal(str(item["price"]))
             quantity = int(item.get("quantity", 1))
-
-            if quantity <= 0:
-                continue
+            if quantity > 0:
+                valid_items.append((name, price, quantity))
         except (KeyError, ValueError, InvalidOperation, TypeError):
             continue
 
+    if not valid_items:
+        return JsonResponse({"status": "empty"})
+
+    order = Order.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        total=Decimal("0.00"),
+    )
+
+    total = Decimal("0.00")
+    for name, price, quantity in valid_items:
         OrderItem.objects.create(
             order=order,
             name=name,
             price=price,
             quantity=quantity,
         )
-
         total += price * quantity
-
-    if total == 0:
-        order.delete()
-        return JsonResponse({"status": "empty"})
 
     order.total = total
     order.save(update_fields=["total"])
@@ -132,11 +134,12 @@ def checkout(request):
         "order_id": order.id,
     })
 
+
 def add_to_cart(request, dish_id):
     if request.method != "POST":
         return JsonResponse({"status": "error"}, status=405)
 
-    dish = Dish.objects.get(id=dish_id)
+    dish = get_object_or_404(Dish, id=dish_id)
 
     cart = request.session.get("cart", {})
 

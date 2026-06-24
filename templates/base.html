@@ -7,45 +7,30 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700;800&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --bg-deep: #070707;
             --bg-card: #111111;
             --bg-card-hover: #171717;
-
             --text-primary: #ffffff;
             --text-secondary: rgba(255,255,255,0.72);
             --text-muted: rgba(255,255,255,0.45);
-
             --gold: #d4af37;
             --gold-soft: rgba(212,175,55,0.14);
-
             --border: rgba(255,255,255,0.08);
             --border-gold: rgba(212,175,55,0.25);
-
             --shadow-soft: 0 10px 40px rgba(0,0,0,0.55);
             --shadow-gold: 0 15px 60px rgba(212,175,55,0.12);
-
             --radius-sm: 12px;
             --radius-md: 18px;
             --radius-lg: 28px;
-
             --transition: 0.25s ease;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: "Inter", sans-serif;
             background: var(--bg-deep);
@@ -53,19 +38,8 @@
             line-height: 1.6;
             font-size: 15px;
         }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .container {
-            width: min(1280px, 92%);
-            margin: 0 auto;
-        }
-
-        /* ================= HEADER ================= */
+        a { color: inherit; text-decoration: none; transition: var(--transition); }
+        .container { width: min(1280px, 92%); margin: 0 auto; }
 
         header {
             position: sticky;
@@ -99,21 +73,8 @@
             flex-wrap: wrap;
         }
 
-        nav a {
-            font-size: 14px;
-            color: var(--text-secondary);
-            position: relative;
-        }
-
-        nav a:hover {
-            color: var(--gold);
-        }
-
-        nav a.active {
-            color: var(--gold);
-        }
-
-        /* ================= BUTTONS ================= */
+        nav a { font-size: 14px; color: var(--text-secondary); }
+        nav a:hover, nav a.active { color: var(--gold); }
 
         .btn {
             display: inline-flex;
@@ -130,22 +91,14 @@
             transition: var(--transition);
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 18px 70px rgba(212,175,55,0.18);
-        }
-
+        .btn:hover { transform: translateY(-2px); }
         .btn-outline {
             background: transparent;
             border: 1px solid var(--border-gold);
             color: var(--text-primary);
             box-shadow: none;
         }
-
-        .btn-outline:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
+        .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
 
         .btn-register {
             padding: 10px 18px;
@@ -157,12 +110,6 @@
             font-size: 13px;
         }
 
-        .btn-register:hover {
-            background: rgba(212,175,55,0.22);
-        }
-
-        /* ================= COUNTERS ================= */
-
         .nav-counter {
             display: inline-flex;
             align-items: center;
@@ -173,12 +120,6 @@
             border: 1px solid var(--border);
             font-size: 13px;
             color: var(--text-secondary);
-            transition: var(--transition);
-        }
-
-        .nav-counter:hover {
-            border-color: var(--gold);
-            color: var(--gold);
         }
 
         .nav-counter span {
@@ -190,17 +131,8 @@
             font-weight: 700;
         }
 
-        /* ================= SECTIONS ================= */
-
-        .section {
-            padding: 90px 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
+        .section { padding: 90px 0; }
+        .section-title { text-align: center; margin-bottom: 60px; }
         .section-title h2 {
             font-family: "Playfair Display", serif;
             font-size: clamp(34px, 4vw, 54px);
@@ -208,7 +140,6 @@
             margin-bottom: 12px;
             color: var(--text-primary);
         }
-
         .section-title h2::after {
             content: "";
             display: block;
@@ -217,13 +148,7 @@
             margin: 18px auto 0;
             background: linear-gradient(90deg, transparent, var(--gold), transparent);
         }
-
-        .section-title p {
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
-
-        /* ================= FOOTER ================= */
+        .section-title p { color: var(--text-secondary); font-size: 16px; }
 
         footer {
             padding: 40px 0;
@@ -233,28 +158,17 @@
             background: rgba(0,0,0,0.2);
         }
 
-        /* ================= MOBILE ================= */
-
         @media (max-width: 768px) {
-            .header-inner {
-                flex-direction: column;
-                padding: 16px 0;
-            }
-
-            nav {
-                justify-content: center;
-                gap: 14px;
-            }
+            .header-inner { flex-direction: column; padding: 16px 0; }
+            nav { justify-content: center; gap: 14px; }
         }
     </style>
 </head>
 
 <body>
-
 <header>
     <div class="container header-inner">
         <div class="logo">CityPark</div>
-
         <nav>
             <a href="{% url 'index' %}" class="{% if active_page == 'index' %}active{% endif %}">Главная</a>
             <a href="{% url 'menu' %}" class="{% if active_page == 'menu' %}active{% endif %}">Меню</a>
@@ -264,15 +178,8 @@
             <a href="{% url 'contacts' %}" class="{% if active_page == 'contacts' %}active{% endif %}">Контакты</a>
 
             <a href="{% url 'registration' %}" class="btn-register">Регистрация</a>
-
-            <a href="{% url 'basket' %}" class="nav-counter">
-                Корзина <span id="cartCount">0</span>
-            </a>
-
-            <a href="{% url 'favourites' %}" class="nav-counter">
-                Избранное <span id="favCount">0</span>
-            </a>
-
+            <a href="{% url 'cart' %}" class="nav-counter">Корзина <span id="cartCount">0</span></a>
+            <a href="{% url 'fav' %}" class="nav-counter">Избранное <span id="favCount">0</span></a>
             <a href="{% url 'profile' %}" class="btn-register">👤</a>
         </nav>
     </div>
@@ -289,6 +196,5 @@
 </footer>
 
 {% block scripts %}{% endblock %}
-
 </body>
 </html>
