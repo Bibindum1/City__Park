@@ -18,6 +18,7 @@ urlpatterns = [
     path('checkout/', catalog_views.checkout, name='checkout'),
     path('order-success/<int:order_id>/', catalog_views.order_success, name='order_success'),
     path('profile/', catalog_views.profile, name='profile'),
+    path('add-to-cart/<int:dish_id>/', catalog_views.add_to_cart, name='add_to_cart'),
 ]
 
 if settings.DEBUG:

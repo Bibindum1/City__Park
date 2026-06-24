@@ -15,12 +15,30 @@ def order_success(request, order_id):
 
 
 def basket_view(request):
-    return render(request, "basket/basket.html")
+    cart = request.session.get("cart", {})
 
+    total = sum(
+        float(item["price"]) * item["quantity"]
+        for item in cart.values()
+    )
 
-def favourites_view(request):
-    return render(request, "basket/favourites.html")
+    return render(request, "basket/basket.html", {
+        "cart": cart,
+        "total": total,
+    })
 
+def favourites_view(request, dish_id):
+    fav = request.session.get("fav", [])
+
+    if dish_id in fav:
+        fav.remove(dish_id)
+    else:
+        fav.append(dish_id)
+
+    request.session["fav"] = fav
+    request.session.modified = True
+
+    return JsonResponse({"status": "ok"})
 
 def index(request):
     dishes = (
@@ -113,6 +131,28 @@ def checkout(request):
         "status": "ok",
         "order_id": order.id,
     })
+
+def add_to_cart(request, dish_id):
+    if request.method != "POST":
+        return JsonResponse({"status": "error"}, status=405)
+
+    dish = Dish.objects.get(id=dish_id)
+
+    cart = request.session.get("cart", {})
+
+    if str(dish_id) in cart:
+        cart[str(dish_id)]["quantity"] += 1
+    else:
+        cart[str(dish_id)] = {
+            "name": dish.name,
+            "price": str(dish.price),
+            "quantity": 1,
+        }
+
+    request.session["cart"] = cart
+    request.session.modified = True
+
+    return JsonResponse({"status": "ok", "cart": cart})
 
 
 @receiver([post_save, post_delete], sender=OrderItem)
