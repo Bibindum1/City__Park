@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+
+{% block title %}Избранное • CityPark{% endblock %}
+
+{% block content %}
+
+<style>
+.fav-page {
+    width: min(1300px, 94%);
+    margin: 0 auto;
+    padding: 80px 0;
+}
+
+.fav-title {
+    text-align: center;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(40px, 5vw, 56px);
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.fav-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 60px;
+}
+
+.fav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 26px;
+}
+
+/* CARD */
+.fav-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    overflow: hidden;
+    transition: 0.35s ease;
+}
+
+.fav-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-gold);
+    border-color: var(--border-gold);
+}
+
+.fav-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+/* CONTENT */
+.fav-content {
+    padding: 22px;
+}
+
+.fav-name {
+    font-family: "Playfair Display", serif;
+    font-size: 22px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.fav-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.fav-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.fav-price {
+    color: var(--gold);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* BUTTONS */
+.btn-row {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    border: none;
+}
+
+.btn-cart {
+    background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
+    color: #0a0a0a;
+    box-shadow: var(--shadow-gold);
+}
+
+.btn-remove {
+    background: transparent;
+    border: 1px solid rgba(255,80,80,0.25);
+    color: #ff7b7b;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* EMPTY STATE */
+.fav-empty {
+    text-align: center;
+    padding: 80px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 36px;
+    color: var(--text-muted);
+    box-shadow: var(--shadow-soft);
+}
+
+.fav-empty h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 34px;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+/* CTA */
+.fav-cta {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.fav-cta a {
+    display: inline-block;
+    padding: 16px 32px;
+    border-radius: 999px;
+    background: var(--gradient-gold);
+    color: #0a0a0a;
+    font-weight: 600;
+    box-shadow: var(--shadow-gold);
+    transition: 0.25s ease;
+}
+
+.fav-cta a:hover {
+    transform: translateY(-2px);
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .btn-row {
+        flex-direction: column;
+    }
+}
+</style>
+
+<section class="fav-page">
+
+    <h1 class="fav-title">Избранное</h1>
+    <p class="fav-subtitle">Ваши сохранённые блюда и вина</p>
+
+    <div id="favorite-items" class="fav-grid"></div>
+
+    <div id="empty-fav" class="fav-empty" style="display:none;">
+        <h2>Пока пусто 🤍</h2>
+        <p>Добавляйте блюда в избранное, чтобы не потерять их</p>
+    </div>
+
+    <div class="fav-cta">
+        <a href="{% url 'index' %}#menu">Перейти в меню</a>
+    </div>
+
+</section>
+
+<script>
+function loadFavorites() {
+
+    let fav = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+    const container = document.getElementById('favorite-items');
+    const empty = document.getElementById('empty-fav');
+
+    if (fav.length === 0) {
+        container.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+
+    empty.style.display = 'none';
+    container.innerHTML = '';
+
+    fav.forEach((item, i) => {
+
+        const card = document.createElement('div');
+
+        card.innerHTML = `
+            <div class="fav-card">
+
+                <img src="${item.image || 'https://via.placeholder.com/400'}">
+
+                <div class="fav-content">
+
+                    <div class="fav-name">${item.name}</div>
+
+                    <div class="fav-desc">
+                        Авторское блюдо от шефа
+                    </div>
+
+                    <div class="fav-bottom">
+                        <div class="fav-price">${item.price} ₽</div>
+                    </div>
+
+                    <div class="btn-row">
+
+                        <button class="btn btn-cart"
+                            onclick="toCart(${i})">
+                            В корзину
+                        </button>
+
+                        <button class="btn btn-remove"
+                            onclick="removeFav(${i})">
+                            Удалить
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+function toCart(i) {
+
+    let fav = JSON.parse(localStorage.getItem('favorites') || '[]');
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    cart.push({
+        name: fav[i].name,
+        price: fav[i].price,
+        image: fav[i].image,
+        quantity: 1
+    });
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    alert("Добавлено в корзину");
+}
+
+function removeFav(i) {
+
+    let fav = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+    fav.splice(i, 1);
+
+    localStorage.setItem('favorites', JSON.stringify(fav));
+
+    loadFavorites();
+}
+
+loadFavorites();
+updateCounters();
+</script>
+
+{% endblock %}

@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}CityPark • Ресторан{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-deep: #070707;
+            --bg-card: #111111;
+            --bg-card-hover: #171717;
+
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255,255,255,0.72);
+            --text-muted: rgba(255,255,255,0.45);
+
+            --gold: #d4af37;
+            --gold-soft: rgba(212,175,55,0.14);
+
+            --border: rgba(255,255,255,0.08);
+            --border-gold: rgba(212,175,55,0.25);
+
+            --shadow-soft: 0 10px 40px rgba(0,0,0,0.55);
+            --shadow-gold: 0 15px 60px rgba(212,175,55,0.12);
+
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 28px;
+
+            --transition: 0.25s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: min(1280px, 92%);
+            margin: 0 auto;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(18px);
+            background: rgba(7,7,7,0.75);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-inner {
+            min-height: 84px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .logo {
+            font-family: "Playfair Display", serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: -0.5px;
+        }
+
+        nav {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            font-size: 14px;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        nav a:hover {
+            color: var(--gold);
+        }
+
+        nav a.active {
+            color: var(--gold);
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 14px;
+            background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
+            color: #0a0a0a;
+            border: none;
+            box-shadow: var(--shadow-gold);
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 70px rgba(212,175,55,0.18);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-gold);
+            color: var(--text-primary);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-register {
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: var(--gold-soft);
+            border: 1px solid var(--border-gold);
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .btn-register:hover {
+            background: rgba(212,175,55,0.22);
+        }
+
+        /* ================= COUNTERS ================= */
+
+        .nav-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .nav-counter:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .nav-counter span {
+            background: var(--gold);
+            color: #000;
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* ================= SECTIONS ================= */
+
+        .section {
+            padding: 90px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(34px, 4vw, 54px);
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .section-title h2::after {
+            content: "";
+            display: block;
+            width: 72px;
+            height: 2px;
+            margin: 18px auto 0;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.2);
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                padding: 16px 0;
+            }
+
+            nav {
+                justify-content: center;
+                gap: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+        <div class="logo">CityPark</div>
+
+        <nav>
+            <a href="{% url 'index' %}" class="{% if active_page == 'index' %}active{% endif %}">Главная</a>
+            <a href="{% url 'menu' %}" class="{% if active_page == 'menu' %}active{% endif %}">Меню</a>
+            <a href="{% url 'booking' %}" class="{% if active_page == 'booking' %}active{% endif %}">Бронирование</a>
+            <a href="{% url 'about' %}" class="{% if active_page == 'about' %}active{% endif %}">О нас</a>
+            <a href="{% url 'wine' %}" class="{% if active_page == 'wine' %}active{% endif %}">Вино</a>
+            <a href="{% url 'contacts' %}" class="{% if active_page == 'contacts' %}active{% endif %}">Контакты</a>
+
+            <a href="{% url 'registration' %}" class="btn-register">Регистрация</a>
+
+            <a href="{% url 'basket' %}" class="nav-counter">
+                Корзина <span id="cartCount">0</span>
+            </a>
+
+            <a href="{% url 'favourites' %}" class="nav-counter">
+                Избранное <span id="favCount">0</span>
+            </a>
+
+            <a href="{% url 'profile' %}" class="btn-register">👤</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <div class="container">
+        © 2026 CityPark — премиальный ресторан
+    </div>
+</footer>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

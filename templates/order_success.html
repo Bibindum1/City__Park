@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ оформлен • CityPark{% endblock %}
+
+{% block content %}
+
+<section class="section">
+
+    <div class="container">
+
+        <div style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:60vh;
+        ">
+
+            <div style="
+                background:var(--bg-card);
+                border:1px solid var(--border);
+                border-radius:36px;
+                padding:70px 60px;
+                text-align:center;
+                box-shadow:var(--shadow-soft);
+                max-width:700px;
+                width:100%;
+            ">
+
+                <!-- ICON -->
+                <div style="
+                    width:84px;
+                    height:84px;
+                    margin:0 auto 24px;
+                    border-radius:50%;
+                    background:rgba(212,175,55,0.12);
+                    border:1px solid var(--border-gold);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    color:var(--gold);
+                    font-size:34px;
+                ">
+                    ✓
+                </div>
+
+                <!-- TITLE -->
+                <h1 style="
+                    font-family:'Playfair Display', serif;
+                    font-size:42px;
+                    color:var(--gold);
+                    margin-bottom:16px;
+                    letter-spacing:-0.5px;
+                ">
+                    Заказ оформлен
+                </h1>
+
+                <!-- TEXT -->
+                <p style="
+                    color:var(--text-secondary);
+                    font-size:18px;
+                    line-height:1.7;
+                    margin-bottom:30px;
+                ">
+                    Спасибо за ваш заказ.<br>
+                    Мы уже начали его готовить.
+                </p>
+
+                <!-- ORDER ID -->
+                <div style="
+                    display:inline-block;
+                    padding:12px 20px;
+                    border-radius:999px;
+                    background:var(--bg-deep);
+                    border:1px solid var(--border);
+                    color:var(--text-secondary);
+                    margin-bottom:30px;
+                    font-size:14px;
+                ">
+                    Номер заказа: <span style="color:var(--gold); font-weight:600;">#{{ order_id }}</span>
+                </div>
+
+                <!-- BUTTON -->
+                <div>
+                    <a href="{% url 'index' %}" class="btn">
+                        Вернуться на главную
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
