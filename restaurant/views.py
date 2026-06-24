@@ -1,11 +1,13 @@
 from decimal import Decimal
 
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
-from catalog.models import Dish, Category, Booking
+from catalog.models import Dish, Category
+from restaurant.models import Booking
 
 
 def menu_view(request):
@@ -45,16 +47,28 @@ def menu_view(request):
     })
 
 
+@login_required
 @require_POST
 def add_to_cart(request, id):
     cart = request.session.get("cart", {})
-    dish = get_object_or_404(Dish, id=id)
+    if not isinstance(cart, dict):
+        cart = {}
 
+    dish = get_object_or_404(Dish, id=id)
     key = str(id)
+
+    current_qty = 0
+
+    # поддержка старого формата (если вдруг int лежит)
+    if isinstance(cart.get(key), dict):
+        current_qty = cart[key].get("quantity", 0)
+    elif isinstance(cart.get(key), int):
+        current_qty = cart.get(key, 0)
+
     cart[key] = {
         "name": dish.name,
         "price": str(dish.price),
-        "quantity": int(cart.get(key, {}).get("quantity", 0)) + 1,
+        "quantity": int(current_qty) + 1,
         "image": dish.image.url if dish.image else "",
     }
 
@@ -64,21 +78,30 @@ def add_to_cart(request, id):
     return JsonResponse({
         "status": "ok",
         "cart": cart,
-        "count": sum(item["quantity"] for item in cart.values())
+        "count": sum(item.get("quantity", 0) for item in cart.values() if isinstance(item, dict))
     })
 
 
 @require_POST
 def remove_from_cart(request, id):
     cart = request.session.get("cart", {})
+    if not isinstance(cart, dict):
+        cart = {}
+
     key = str(id)
 
     if key in cart:
-        qty = int(cart[key].get("quantity", 0)) - 1
+        if isinstance(cart[key], dict):
+            qty = int(cart[key].get("quantity", 0)) - 1
+        else:
+            qty = int(cart[key]) - 1
+
         if qty <= 0:
             del cart[key]
         else:
-            cart[key]["quantity"] = qty
+            cart[key] = {
+                "quantity": qty
+            }
 
     request.session["cart"] = cart
     request.session.modified = True
@@ -86,19 +109,33 @@ def remove_from_cart(request, id):
     return JsonResponse({
         "status": "ok",
         "cart": cart,
-        "count": sum(item["quantity"] for item in cart.values())
+        "count": sum(
+            item.get("quantity", 0) if isinstance(item, dict) else int(item)
+            for item in cart.values()
+        )
     })
 
 
+@login_required
 def cart_view(request):
     cart = request.session.get("cart", {})
+
+    if not isinstance(cart, dict):
+        cart = {}
+        request.session["cart"] = cart
+
     items = []
     total_count = 0
     total_sum = Decimal("0.00")
 
     for dish_id, data in cart.items():
         dish = get_object_or_404(Dish, id=int(dish_id))
-        qty = int(data.get("quantity", 0))
+
+        if isinstance(data, dict):
+            qty = int(data.get("quantity", 0))
+        else:
+            qty = int(data)
+
         line_sum = dish.price * qty
 
         items.append({
@@ -178,11 +215,21 @@ def booking_view(request):
 
     return render(request, "booking.html")
 
+def cart_count(request):
+    cart = request.session.get("cart", {})
+    count = sum(i.get("quantity", 0) for i in cart.values() if isinstance(i, dict))
+    return JsonResponse({"count": count})
+
+
+def fav_count(request):
+    favs = request.session.get("favs", [])
+    return JsonResponse({"count": len(favs)})
+
+
 def booking_success(request, booking_id):
     return render(request, "order_success.html", {
         "order_id": booking_id
     })
-
 
 
 def about_view(request):

@@ -191,10 +191,31 @@
 
 <footer>
     <div class="container">
-        © 2026 CityPark — премиальный ресторан
+        © 2026 CityPark - Все права защищены.
     </div>
 </footer>
 
 {% block scripts %}{% endblock %}
+<script>
+function updateCounters() {
+    fetch("/cart/count/")
+        .then(r => r.json())
+        .then(data => {
+            const el = document.getElementById("cartCount");
+            if (el) el.textContent = data.count;
+        })
+        .catch(() => {});
+
+    fetch("/fav/count/")
+        .then(r => r.json())
+        .then(data => {
+            const el = document.getElementById("favCount");
+            if (el) el.textContent = data.count;
+        })
+        .catch(() => {});
+}
+
+document.addEventListener("DOMContentLoaded", updateCounters);
+</script>
 </body>
 </html>

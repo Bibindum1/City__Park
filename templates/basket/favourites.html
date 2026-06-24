@@ -5,7 +5,7 @@
 {% block content %}
 <style>
 .fav-page {
-    width: min(1300px, 94%);
+    width: min(1200px, 92%);
     margin: 0 auto;
     padding: 80px 0;
 }
@@ -13,71 +13,78 @@
 .fav-title {
     text-align: center;
     font-family: "Playfair Display", serif;
-    font-size: clamp(40px, 5vw, 56px);
+    font-size: clamp(36px, 4.5vw, 52px);
     color: var(--gold);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .fav-subtitle {
     text-align: center;
     color: var(--text-muted);
-    margin-bottom: 60px;
+    margin-bottom: 50px;
+    font-size: 15px;
 }
 
 .fav-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 26px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 22px;
 }
 
 .fav-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 30px;
+    border-radius: 24px;
     overflow: hidden;
-    transition: 0.35s ease;
+    transition: 0.25s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .fav-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-gold);
+    transform: translateY(-5px);
     border-color: var(--border-gold);
 }
 
-.fav-card img {
+.fav-img {
     width: 100%;
-    height: 220px;
+    height: 200px;
     object-fit: cover;
     background: #111;
 }
 
 .fav-content {
-    padding: 22px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .fav-name {
     font-family: "Playfair Display", serif;
-    font-size: 22px;
+    font-size: 20px;
     color: var(--text-primary);
     margin-bottom: 6px;
 }
 
 .fav-desc {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
+    line-height: 1.5;
 }
 
 .fav-bottom {
+    margin-top: auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
 }
 
 .fav-price {
     color: var(--gold);
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 700;
 }
 
@@ -88,69 +95,83 @@
 
 .btn {
     flex: 1;
-    padding: 12px 14px;
+    padding: 10px 12px;
     border-radius: 999px;
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
-    transition: 0.25s ease;
-    border: none;
-    text-align: center;
-    text-decoration: none;
-}
-
-.btn-cart {
-    background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
-    color: #0a0a0a;
-    box-shadow: var(--shadow-gold);
-}
-
-.btn-remove {
+    transition: 0.2s ease;
+    border: 1px solid var(--border);
     background: transparent;
-    border: 1px solid rgba(255,80,80,0.25);
-    color: #ff7b7b;
+    color: var(--text-secondary);
 }
 
 .btn:hover {
     transform: translateY(-2px);
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.btn-cart {
+    background: var(--gold);
+    border: none;
+    color: #111;
+}
+
+.btn-cart:hover {
+    box-shadow: 0 10px 25px rgba(212,175,55,0.25);
+}
+
+.btn-remove {
+    border-color: rgba(255,80,80,0.3);
+    color: #ff7b7b;
+}
+
+.btn-remove:hover {
+    border-color: #ff7b7b;
+    color: #ff4d4d;
 }
 
 .fav-empty {
     text-align: center;
-    padding: 80px 20px;
+    padding: 70px 20px;
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 36px;
+    border-radius: 28px;
     color: var(--text-muted);
-    box-shadow: var(--shadow-soft);
 }
 
 .fav-empty h2 {
     font-family: "Playfair Display", serif;
-    font-size: 34px;
+    font-size: 30px;
     color: var(--gold);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .fav-cta {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 40px;
 }
 
 .fav-cta a {
     display: inline-block;
-    padding: 16px 32px;
+    padding: 14px 28px;
     border-radius: 999px;
-    background: var(--gradient-gold);
+
+    background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
     color: #0a0a0a;
+
     font-weight: 600;
-    box-shadow: var(--shadow-gold);
-    transition: 0.25s ease;
     text-decoration: none;
+
+    box-shadow: 0 10px 25px rgba(212,175,55,0.25);
+
+    transition: 0.25s ease;
 }
 
 .fav-cta a:hover {
     transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(212,175,55,0.35);
 }
 
 @media (max-width: 768px) {
@@ -162,29 +183,34 @@
 
 <section class="fav-page">
     <h1 class="fav-title">Избранное</h1>
-    <p class="fav-subtitle">Ваши сохранённые блюда и вина</p>
+    <p class="fav-subtitle">Сохранённые блюда и позиции меню</p>
 
     {% if dishes %}
         <div class="fav-grid">
             {% for dish in dishes %}
                 <div class="fav-card">
+
                     {% if dish.image %}
-                        <img src="{{ dish.image.url }}" alt="{{ dish.name }}">
+                        <img class="fav-img" src="{{ dish.image.url }}" alt="{{ dish.name }}">
                     {% else %}
-                        <img src="https://via.placeholder.com/400" alt="{{ dish.name }}">
+                        <img class="fav-img" src="https://avatars.mds.yandex.net/i?id=9238b4a0cfc29cd183eb65e938307731_l-10102345-images-thumbs&n=13" alt="{{ dish.name }}">
                     {% endif %}
 
                     <div class="fav-content">
                         <div class="fav-name">{{ dish.name }}</div>
-                        <div class="fav-desc">Авторское блюдо от шефа</div>
+                        <div class="fav-desc">{{ dish.description|default:"Авторское блюдо от шефа" }}</div>
 
                         <div class="fav-bottom">
                             <div class="fav-price">{{ dish.price }} ₽</div>
                         </div>
 
                         <div class="btn-row">
-                            <button class="btn btn-cart" onclick="addToCart({{ dish.id }})">В корзину</button>
-                            <button class="btn btn-remove" onclick="toggleFav({{ dish.id }})">Удалить</button>
+                            <button class="btn btn-cart" onclick="addToCart({{ dish.id }})">
+                                В корзину
+                            </button>
+                            <button class="btn btn-remove" onclick="toggleFav({{ dish.id }})">
+                                Удалить
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -192,13 +218,13 @@
         </div>
     {% else %}
         <div class="fav-empty">
-            <h2>Пока пусто 🤍</h2>
-            <p>Добавляйте блюда в избранное, чтобы не потерять их</p>
+            <h2>Пока пусто</h2>
+            <p>Добавляйте блюда в избранное, чтобы быстро находить их позже</p>
         </div>
     {% endif %}
 
     <div class="fav-cta">
-        <a href="{% url 'menu' %}#menu">Перейти в меню</a>
+        <a href="{% url 'menu' %}">Перейти в меню</a>
     </div>
 </section>
 

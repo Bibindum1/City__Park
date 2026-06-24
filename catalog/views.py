@@ -18,7 +18,7 @@ def basket_view(request):
     cart = request.session.get("cart", {})
 
     total = sum(
-        Decimal(item["price"]) * Decimal(str(item["quantity"]))
+        Decimal(str(item["price"])) * Decimal(item["quantity"])
         for item in cart.values()
     )
 

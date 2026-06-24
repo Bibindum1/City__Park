@@ -4,15 +4,25 @@ from django.contrib.auth.views import LogoutView
 from django.conf import settings
 from django.conf.urls.static import static
 
+import restaurant
+from restaurant import views as restaurant_views
 from catalog import views as catalog_views
 from users.views import login_view, register_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', catalog_views.index, name='index'),
+    path('', include('restaurant.urls')),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('login/', login_view, name='login'),
     path('registration/', register_view, name='registration'),
+    path('menu/', restaurant_views.menu_view, name='menu'),
+    path('booking/', restaurant_views.booking_view, name='booking'),
+    path('about/', restaurant_views.about_view, name='about'),
+    path('wine/', restaurant_views.wine_view, name='wine'),
+    path('contacts/', restaurant_views.contacts_view, name='contacts'),
+    path('cart/', restaurant_views.cart_view, name='cart'),
+    path('fav/', restaurant_views.fav_view, name='fav'),
     path('basket/', catalog_views.basket_view, name='basket'),
     path('favourites/', catalog_views.favourites_view, name='favourites'),
     path('checkout/', catalog_views.checkout, name='checkout'),

@@ -3,354 +3,367 @@
 {% block title %}Меню • CityPark{% endblock %}
 
 {% block content %}
-<style>
-    .menu-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-        gap: 28px;
-    }
-
-    .menu-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 26px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        transition: 0.35s ease;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-    }
-
-    .menu-card:hover {
-        transform: translateY(-6px);
-        border-color: var(--border-gold);
-    }
-
-    .menu-card img {
-        width: 100%;
-        height: 240px;
-        object-fit: cover;
-        filter: saturate(1.05) contrast(1.05);
-        background: #111;
-    }
-
-    .menu-content {
-        padding: 22px;
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-    }
-
-    .menu-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 10px;
-    }
-
-    .menu-title {
-        font-family: "Playfair Display", serif;
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--text-primary);
-        line-height: 1.2;
-    }
-
-    .menu-price {
-        color: var(--gold);
-        font-weight: 700;
-        font-size: 20px;
-        white-space: nowrap;
-    }
-
-    .menu-description {
-        color: var(--text-muted);
-        font-size: 14px;
-        line-height: 1.6;
-        margin: 14px 0 16px;
-    }
-
-    .menu-category {
-        display: inline-flex;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 12px;
-        color: var(--gold);
-        background: var(--gold-soft);
-        border: 1px solid var(--border-gold);
-        width: fit-content;
-        margin-bottom: 16px;
-    }
-
-    .menu-actions {
-        margin-top: auto;
-        display: flex;
-        gap: 10px;
-    }
-
-    .small-btn {
-        flex: 1;
-        padding: 11px 14px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: transparent;
-        color: var(--text-secondary);
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.25s ease;
-    }
-
-    .small-btn:hover {
-        border-color: var(--gold);
-        color: var(--gold);
-    }
-
-    .add-cart {
-        background: var(--gold);
-        color: #111;
-        border: none;
-    }
-
-    .add-cart:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
-    }
-
-    .fav-active {
-        background: var(--gold-soft);
-        border-color: var(--border-gold);
-        color: var(--gold);
-    }
-
-    .filters {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 28px;
-    }
-
-    .filter-btn {
-        padding: 10px 18px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--bg-card);
-        color: var(--text-secondary);
-        font-size: 13px;
-        cursor: pointer;
-        transition: 0.25s ease;
-    }
-
-    .filter-btn:hover,
-    .filter-btn.active {
-        border-color: var(--gold);
-        color: var(--gold);
-    }
-
-    .sort-row {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 22px;
-    }
-
-    .search-form {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    }
-
-    .search-input, .sort-select {
-        padding: 10px 14px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--bg-card);
-        color: var(--text-primary);
-        min-width: 240px;
-    }
-
-    .search-btn {
-        padding: 10px 14px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--gold);
-        color: #111;
-        cursor: pointer;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 80px 20px;
-        color: var(--text-muted);
-    }
-
-    .empty-state h3 {
-        font-family: "Playfair Display", serif;
-        font-size: 28px;
-        color: var(--text-primary);
-        margin-bottom: 10px;
-    }
-
-    @media (max-width: 768px) {
+    <style>
         .menu-grid {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 28px;
         }
-    }
-</style>
 
-<section class="section">
-    <div class="container">
+        .menu-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: 0.35s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+        }
 
-        <div class="section-title">
-            <h2>Меню ресторана</h2>
-            <p>Авторская кухня премиум уровня</p>
-        </div>
+        .menu-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-gold);
+        }
 
-        <form method="GET" class="search-form">
-            <input type="text"
-                   name="q"
-                   value="{{ query|default:'' }}"
-                   placeholder="Поиск блюда..."
-                   class="search-input">
-            <button type="submit" class="search-btn">Поиск</button>
-        </form>
+        .menu-card img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            filter: saturate(1.05) contrast(1.05);
+            background: #111;
+        }
 
-        <div class="sort-row">
-            <a href="?{% if query %}q={{ query }}&{% endif %}sort=price_asc" class="filter-btn {% if sort == 'price_asc' %}active{% endif %}">Цена ↑</a>
-            <a href="?{% if query %}q={{ query }}&{% endif %}sort=price_desc" class="filter-btn {% if sort == 'price_desc' %}active{% endif %}">Цена ↓</a>
-            <a href="?{% if query %}q={{ query }}&{% endif %}sort=name" class="filter-btn {% if sort == 'name' %}active{% endif %}">По названию</a>
-            <a href="{% url 'menu' %}" class="filter-btn">Сбросить</a>
-        </div>
+        .menu-content {
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
 
-        <div class="filters">
-            <a class="filter-btn {% if category == 'all' or not category %}active{% endif %}" href="{% url 'menu' %}{% if query or sort %}?{% if query %}q={{ query }}&{% endif %}{% if sort %}sort={{ sort }}{% endif %}{% endif %}">Все</a>
-            {% for cat in categories %}
-                <a class="filter-btn {% if category == cat.slug %}active{% endif %}"
-                   href="?category={{ cat.slug }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
-                    {{ cat.name }}
-                </a>
-            {% endfor %}
-        </div>
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
 
-        <div class="menu-grid">
-            {% if dishes %}
-                {% for dish in dishes %}
-                    <article class="menu-card"
-                             data-id="{{ dish.id }}"
-                             data-name="{{ dish.name }}"
-                             data-price="{{ dish.price }}"
-                             data-category="{{ dish.category.slug }}">
+        .menu-title {
+            font-family: "Playfair Display", serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
 
-                        {% if dish.image %}
-                            <img src="{{ dish.image.url }}" alt="{{ dish.name }}">
-                        {% else %}
-                            <img src="https://via.placeholder.com/600x400?text=No+Image" alt="{{ dish.name }}">
-                        {% endif %}
+        .menu-price {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 20px;
+            white-space: nowrap;
+        }
 
-                        <div class="menu-content">
-                            <div class="menu-header">
-                                <div class="menu-title">{{ dish.name }}</div>
-                                <div class="menu-price">{{ dish.price }} ₽</div>
-                            </div>
+        .menu-description {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 14px 0 16px;
+        }
 
-                            <div class="menu-description">
-                                {{ dish.description|default:"Описание пока отсутствует." }}
-                            </div>
+        .menu-category {
+            display: inline-flex;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: var(--gold);
+            background: var(--gold-soft);
+            border: 1px solid var(--border-gold);
+            width: fit-content;
+            margin-bottom: 16px;
+        }
 
-                            <div class="menu-category">
-                                {{ dish.category.name }}
-                            </div>
+        .menu-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 10px;
+        }
 
-                            <div class="menu-actions">
-                                <button type="button" class="small-btn add-cart" data-id="{{ dish.id }}">
-                                    В корзину
-                                </button>
+        .small-btn {
+            flex: 1;
+            padding: 11px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
 
-                                <button type="button"
-                                        class="small-btn fav-btn {% if dish.id in favs %}fav-active{% endif %}"
-                                        data-id="{{ dish.id }}">
-                                    В избранное
-                                </button>
-                            </div>
-                        </div>
-                    </article>
+        .small-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .add-cart {
+            background: var(--gold);
+            color: #111;
+            border: none;
+        }
+
+
+        .add-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+            background: var(--gold);
+            color: #111;
+            border: none;
+        }
+
+
+        .fav-active {
+            background: var(--gold-soft);
+            border-color: var(--border-gold);
+            color: var(--gold);
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .filter-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .sort-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .search-input, .sort-select {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            min-width: 240px;
+        }
+
+        .search-btn {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--gold);
+            color: #111;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state h3 {
+            font-family: "Playfair Display", serif;
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <section class="section">
+        <div class="container">
+
+            <div class="section-title">
+                <h2>Меню ресторана</h2>
+                <p>Авторская кухня премиум уровня</p>
+            </div>
+
+            <form method="GET" class="search-form">
+                <input type="text"
+                       name="q"
+                       value="{{ query|default:'' }}"
+                       placeholder="Поиск блюда..."
+                       class="search-input">
+                <button type="submit" class="search-btn">Поиск</button>
+            </form>
+
+            <div class="sort-row">
+                <a href="?{% if query %}q={{ query }}&{% endif %}sort=price_asc"
+                   class="filter-btn {% if sort == 'price_asc' %}active{% endif %}">Цена ↑</a>
+                <a href="?{% if query %}q={{ query }}&{% endif %}sort=price_desc"
+                   class="filter-btn {% if sort == 'price_desc' %}active{% endif %}">Цена ↓</a>
+                <a href="?{% if query %}q={{ query }}&{% endif %}sort=name"
+                   class="filter-btn {% if sort == 'name' %}active{% endif %}">По названию</a>
+                <a href="{% url 'menu' %}" class="filter-btn">Сбросить</a>
+            </div>
+
+            <div class="filters">
+                <a class="filter-btn {% if category == 'all' or not category %}active{% endif %}" href="
+                        {% url 'menu' %}{% if query or sort %}?{% if query %}q={{ query }}&{% endif %}{% if sort %}sort={{ sort }}{% endif %}{% endif %}">Все</a>
+                {% for cat in categories %}
+                    <a class="filter-btn {% if category == cat.slug %}active{% endif %}"
+                       href="?category=
+                               {{ cat.slug }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
+                        {{ cat.name }}
+                    </a>
                 {% endfor %}
-            {% else %}
-                <div class="empty-state">
-                    <h3>Меню пустое</h3>
-                </div>
-            {% endif %}
-        </div>
+            </div>
 
-    </div>
-</section>
+            <div class="menu-grid">
+                {% if dishes %}
+                    {% for dish in dishes %}
+                        <article class="menu-card"
+                                 data-id="{{ dish.id }}"
+                                 data-name="{{ dish.name }}"
+                                 data-price="{{ dish.price }}"
+                                 data-category="{{ dish.category.slug }}">
+
+                            {% if dish.image %}
+                                <img src="{{ dish.image.url }}" alt="{{ dish.name }}">
+                            {% else %}
+                                <img src="https://avatars.mds.yandex.net/i?id=9238b4a0cfc29cd183eb65e938307731_l-10102345-images-thumbs&n=13"
+                                     alt="{{ dish.name }}">
+                            {% endif %}
+
+                            <div class="menu-content">
+                                <div class="menu-header">
+                                    <div class="menu-title">{{ dish.name }}</div>
+                                    <div class="menu-price">{{ dish.price }} ₽</div>
+                                </div>
+
+                                <div class="menu-description">
+                                    {{ dish.description|default:"Описание пока отсутствует." }}
+                                </div>
+
+                                <div class="menu-category">
+                                    {{ dish.category.name }}
+                                </div>
+
+                                <div class="menu-actions">
+                                    <button type="button" class="small-btn add-cart" data-id="{{ dish.id }}">
+                                        В корзину
+                                    </button>
+
+                                    <button type="button"
+                                            class="small-btn fav-btn {% if dish.id in favs %}fav-active{% endif %}"
+                                            data-id="{{ dish.id }}">
+                                        В избранное
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <h3>Меню пустое</h3>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </section>
 {% endblock %}
 
 {% block scripts %}
-<script>
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie) {
-        document.cookie.split(';').forEach(c => {
-            c = c.trim();
-            if (c.startsWith(name + '=')) {
-                cookieValue = decodeURIComponent(c.substring(name.length + 1));
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie) {
+                document.cookie.split(';').forEach(c => {
+                    c = c.trim();
+                    if (c.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(c.substring(name.length + 1));
+                    }
+                });
             }
+            return cookieValue;
+        }
+
+        function updateCounters() {
+            fetch("{% url 'cart' %}", {credentials: "same-origin"})
+                .then(() => {
+                })
+                .catch(() => {
+                });
+        }
+
+        document.querySelectorAll(".add-cart").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = btn.dataset.id;
+                fetch(`/cart/add/${id}/`, {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken")
+                    }
+                })
+                    .then(r => r.json())
+                    .then(() => {
+                        btn.textContent = "Добавлено";
+                        setTimeout(() => btn.textContent = "В корзину", 900);
+                    });
+            });
         });
-    }
-    return cookieValue;
-}
 
-function updateCounters() {
-    fetch("{% url 'cart' %}", {credentials: "same-origin"})
-        .then(() => {})
-        .catch(() => {});
-}
-
-document.querySelectorAll(".add-cart").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const id = btn.dataset.id;
-        fetch(`/cart/add/${id}/`, {
-            method: "POST",
-            credentials: "same-origin",
-            headers: {
-                "X-CSRFToken": getCookie("csrftoken")
-            }
-        })
-        .then(r => r.json())
-        .then(() => {
-            btn.textContent = "Добавлено";
-            setTimeout(() => btn.textContent = "В корзину", 900);
+        document.querySelectorAll(".fav-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = btn.dataset.id;
+                fetch(`/fav/toggle/${id}/`, {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken")
+                    }
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.status === "added") {
+                            btn.classList.add("fav-active");
+                        } else {
+                            btn.classList.remove("fav-active");
+                        }
+                    });
+            });
         });
-    });
-});
 
-document.querySelectorAll(".fav-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const id = btn.dataset.id;
-        fetch(`/fav/toggle/${id}/`, {
-            method: "POST",
-            credentials: "same-origin",
-            headers: {
-                "X-CSRFToken": getCookie("csrftoken")
-            }
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.status === "added") {
-                btn.classList.add("fav-active");
-            } else {
-                btn.classList.remove("fav-active");
-            }
-        });
-    });
-});
-
-document.addEventListener("DOMContentLoaded", updateCounters);
-</script>
+        document.addEventListener("DOMContentLoaded", updateCounters);
+    </script>
 {% endblock %}
