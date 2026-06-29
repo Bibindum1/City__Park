@@ -75,6 +75,12 @@
         border: none;
         color: var(--gold);
         cursor: pointer;
+        font-size: 18px;
+        transition: 0.25s ease;
+    }
+
+    .qty button:hover {
+        background: var(--gold-soft);
     }
 
     .qty span {
@@ -99,6 +105,12 @@
         padding: 10px 14px;
         border-radius: 12px;
         cursor: pointer;
+        transition: 0.25s ease;
+    }
+
+    .remove:hover {
+        background: rgba(255, 80, 80, 0.15);
+        transform: translateY(-2px);
     }
 
     .cart-bottom {
@@ -117,7 +129,18 @@
         margin-top: 6px;
     }
 
+    .cart-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
     .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         padding: 14px 26px;
         border-radius: 999px;
         border: none;
@@ -125,11 +148,17 @@
         font-weight: 600;
         font-size: 14px;
         text-decoration: none;
+        transition: 0.25s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
     }
 
     .btn-primary {
         background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
         color: #0a0a0a;
+        box-shadow: var(--shadow-gold);
     }
 
     .btn-outline {
@@ -138,10 +167,19 @@
         color: var(--text-secondary);
     }
 
+    .btn-outline:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+    }
+
     .btn-danger {
         background: rgba(255, 80, 80, 0.08);
         border: 1px solid rgba(255, 80, 80, 0.25);
         color: #ff7a7a;
+    }
+
+    .btn-danger:hover {
+        background: rgba(255, 80, 80, 0.15);
     }
 
     .empty {
@@ -154,6 +192,253 @@
         font-family: "Playfair Display", serif;
         color: var(--gold);
         font-size: 34px;
+    }
+
+    .checkout-modal,
+    .confirm-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 22px;
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(14px);
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.25s ease;
+    }
+
+    .checkout-modal.active,
+    .confirm-modal.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .checkout-card,
+    .confirm-card {
+        width: min(620px, 100%);
+        max-height: 92vh;
+        overflow-y: auto;
+        background:
+            radial-gradient(circle at top left, rgba(212, 175, 55, 0.13), transparent 34%),
+            var(--bg-card);
+        border: 1px solid var(--border-gold);
+        border-radius: 34px;
+        padding: 30px;
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.65);
+        transform: translateY(18px) scale(0.98);
+        transition: 0.25s ease;
+    }
+
+    .confirm-card {
+        width: min(460px, 100%);
+        text-align: center;
+    }
+
+    .checkout-modal.active .checkout-card,
+    .confirm-modal.active .confirm-card {
+        transform: translateY(0) scale(1);
+    }
+
+    .checkout-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .checkout-head h2,
+    .confirm-card h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 34px;
+        line-height: 1.1;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+    }
+
+    .checkout-head p,
+    .confirm-card p {
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+
+    .modal-close {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text-secondary);
+        font-size: 22px;
+        cursor: pointer;
+        transition: 0.25s ease;
+        flex-shrink: 0;
+    }
+
+    .modal-close:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+    }
+
+    .checkout-form {
+        display: grid;
+        gap: 14px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .field {
+        display: grid;
+        gap: 7px;
+    }
+
+    .field label {
+        font-size: 13px;
+        color: var(--text-secondary);
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+        width: 100%;
+        padding: 14px 15px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.28);
+        color: var(--text-primary);
+        outline: none;
+        transition: 0.25s ease;
+        font-family: "Inter", sans-serif;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.10);
+    }
+
+    .field textarea {
+        min-height: 105px;
+        resize: vertical;
+    }
+
+    .checkout-summary {
+        margin: 8px 0 2px;
+        padding: 18px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.035);
+        border: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .checkout-summary span {
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+
+    .checkout-summary strong {
+        color: var(--gold);
+        font-size: 26px;
+        font-family: "Playfair Display", serif;
+    }
+
+    .checkout-actions,
+    .confirm-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        margin-top: 6px;
+    }
+
+    .confirm-actions {
+        justify-content: center;
+        margin-top: 26px;
+    }
+
+    .toast {
+        position: fixed;
+        top: 104px;
+        right: 24px;
+        z-index: 9999;
+        max-width: 340px;
+        padding: 14px 18px;
+        border-radius: 18px;
+        background: rgba(17, 17, 17, 0.96);
+        border: 1px solid var(--border-gold);
+        color: var(--text-primary);
+        box-shadow: var(--shadow-soft);
+        opacity: 0;
+        transform: translateX(18px);
+        transition: 0.25s ease;
+    }
+
+    .toast.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    @media (max-width: 900px) {
+        .cart-item {
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .price {
+            text-align: left;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .cart-box {
+            padding: 24px;
+            border-radius: 26px;
+        }
+
+        .cart-left {
+            width: 100%;
+        }
+
+        .cart-bottom {
+            align-items: flex-start;
+        }
+
+        .cart-actions {
+            justify-content: flex-start;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .checkout-card,
+        .confirm-card {
+            padding: 24px;
+            border-radius: 26px;
+        }
+
+        .checkout-head h2,
+        .confirm-card h2 {
+            font-size: 28px;
+        }
+
+        .toast {
+            top: 92px;
+            left: 16px;
+            right: 16px;
+            max-width: none;
+        }
     }
 </style>
 
@@ -171,6 +456,7 @@
                             {% else %}
                                 <div class="cart-image"></div>
                             {% endif %}
+
                             <div class="cart-info">
                                 <h3>{{ item.dish.name }}</h3>
                                 <p>{{ item.dish.price }} ₽ / шт</p>
@@ -178,14 +464,14 @@
                         </div>
 
                         <div class="qty">
-                            <button onclick="changeQty({{ item.dish.id }}, -1)">−</button>
+                            <button type="button" onclick="changeQty({{ item.dish.id }}, -1)">−</button>
                             <span>{{ item.qty }}</span>
-                            <button onclick="changeQty({{ item.dish.id }}, 1)">+</button>
+                            <button type="button" onclick="changeQty({{ item.dish.id }}, 1)">+</button>
                         </div>
 
                         <div class="price">{{ item.sum }} ₽</div>
 
-                        <button class="remove" onclick="changeQty({{ item.dish.id }}, -1)">✕</button>
+                        <button type="button" class="remove" onclick="confirmRemoveItem({{ item.dish.id }})">✕</button>
                     </div>
                 {% endfor %}
             {% else %}
@@ -201,34 +487,192 @@
                     <h2>{{ total_sum }} ₽</h2>
                 </div>
 
-                <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    <button onclick="clearCart()" class="btn btn-danger">Очистить</button>
+                <div class="cart-actions">
                     <a href="{% url 'menu' %}" class="btn btn-outline">Продолжить</a>
+
+                    {% if items %}
+                        <button type="button" onclick="confirmClearCart()" class="btn btn-danger">
+                            Очистить
+                        </button>
+
+                        <button type="button" onclick="openCheckoutModal()" class="btn btn-primary">
+                            Оформить заказ
+                        </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<div class="checkout-modal" id="checkoutModal" aria-hidden="true">
+    <div class="checkout-card" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+        <div class="checkout-head">
+            <div>
+                <h2 id="checkoutTitle">Оформление заказа</h2>
+                <p>Заполните данные, и мы свяжемся с вами для подтверждения.</p>
+            </div>
+
+            <button type="button" class="modal-close" onclick="closeCheckoutModal()" aria-label="Закрыть">
+                ×
+            </button>
+        </div>
+
+        <form class="checkout-form" method="POST" action="/order/create/">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="customerName">Имя</label>
+                    <input id="customerName" name="name" type="text" placeholder="Ваше имя" required>
+                </div>
+
+                <div class="field">
+                    <label for="customerPhone">Телефон</label>
+                    <input id="customerPhone" name="phone" type="tel" placeholder="+7 999 123-45-67" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="customerAddress">Адрес доставки</label>
+                <input id="customerAddress" name="address" type="text" placeholder="Улица, дом, квартира" required>
+            </div>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="deliveryTime">Время доставки</label>
+                    <input id="deliveryTime" name="delivery_time" type="text" placeholder="Например: к 19:30">
+                </div>
+
+                <div class="field">
+                    <label for="paymentMethod">Способ оплаты</label>
+                    <select id="paymentMethod" name="payment_method" required>
+                        <option value="cash">Наличными</option>
+                        <option value="card">Картой курьеру</option>
+                        <option value="online">Онлайн-оплата</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="orderComment">Комментарий</label>
+                <textarea id="orderComment" name="comment" placeholder="Например: не звонить в домофон"></textarea>
+            </div>
+
+            <div class="checkout-summary">
+                <span>Итого к оплате</span>
+                <strong>{{ total_sum }} ₽</strong>
+            </div>
+
+            <div class="checkout-actions">
+                <button type="button" class="btn btn-outline" onclick="closeCheckoutModal()">Отмена</button>
+                <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="confirm-modal" id="confirmModal" aria-hidden="true">
+    <div class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <h2 id="confirmTitle">Подтвердите удаление</h2>
+        <p id="confirmText">Вы точно хотите удалить?</p>
+
+        <div class="confirm-actions">
+            <button type="button" class="btn btn-outline" onclick="closeConfirmModal()">Отмена</button>
+            <button type="button" class="btn btn-danger" onclick="runConfirmedAction()">Удалить</button>
+        </div>
+    </div>
+</div>
+
 <script>
+    let confirmedAction = null;
+
     function showToast(msg) {
-        const t = document.createElement('div');
+        const oldToast = document.querySelector(".toast");
+        if (oldToast) oldToast.remove();
+
+        const t = document.createElement("div");
+        t.className = "toast";
         t.textContent = msg;
-        t.style.position = "fixed";
-        t.style.bottom = "20px";
-        t.style.left = "50%";
-        t.style.transform = "translateX(-50%)";
-        t.style.background = "var(--bg-card)";
-        t.style.border = "1px solid var(--border)";
-        t.style.padding = "12px 20px";
-        t.style.borderRadius = "999px";
-        t.style.zIndex = "9999";
         document.body.appendChild(t);
-        setTimeout(() => t.remove(), 2000);
+
+        requestAnimationFrame(() => t.classList.add("show"));
+
+        setTimeout(() => {
+            t.classList.remove("show");
+            setTimeout(() => t.remove(), 250);
+        }, 2200);
+    }
+
+    function openCheckoutModal() {
+        const modal = document.getElementById("checkoutModal");
+        if (!modal) return;
+
+        modal.classList.add("active");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+
+        const firstInput = document.getElementById("customerName");
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 150);
+        }
+    }
+
+    function closeCheckoutModal() {
+        const modal = document.getElementById("checkoutModal");
+        if (!modal) return;
+
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+    }
+
+    function openConfirmModal(text, action) {
+        const modal = document.getElementById("confirmModal");
+        const textEl = document.getElementById("confirmText");
+        if (!modal || !textEl) return;
+
+        textEl.textContent = text;
+        confirmedAction = action;
+
+        modal.classList.add("active");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeConfirmModal() {
+        const modal = document.getElementById("confirmModal");
+        if (!modal) return;
+
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        confirmedAction = null;
+    }
+
+    function runConfirmedAction() {
+        if (typeof confirmedAction === "function") {
+            confirmedAction();
+        }
+
+        closeConfirmModal();
+    }
+
+    function confirmRemoveItem(id) {
+        openConfirmModal("Вы точно хотите удалить этот товар из корзины?", function() {
+            removeItem(id);
+        });
+    }
+
+    function confirmClearCart() {
+        openConfirmModal("Вы точно хотите очистить всю корзину?", function() {
+            clearCart();
+        });
     }
 
     function changeQty(id, d) {
         const url = d > 0 ? `/cart/add/${id}/` : `/cart/remove/${id}/`;
+
         fetch(url, {
             method: "POST",
             credentials: "same-origin",
@@ -237,7 +681,22 @@
             }
         })
             .then(() => location.reload())
-            .catch(() => showToast("Ошибка"));
+            .catch(() => showToast("Ошибка. Попробуйте ещё раз."));
+    }
+
+    function removeItem(id) {
+        fetch(`/cart/remove/${id}/`, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            }
+        })
+            .then(() => {
+                showToast("Товар удалён из корзины");
+                setTimeout(() => location.reload(), 450);
+            })
+            .catch(() => showToast("Ошибка. Попробуйте ещё раз."));
     }
 
     function clearCart() {
@@ -248,19 +707,47 @@
                 "X-CSRFToken": getCookie("csrftoken")
             }
         })
-            .then(() => location.reload())
-            .catch(() => showToast("Ошибка"));
+            .then(() => {
+                showToast("Корзина очищена");
+                setTimeout(() => location.reload(), 450);
+            })
+            .catch(() => showToast("Ошибка. Попробуйте ещё раз."));
     }
 
     function getCookie(name) {
         let v = null;
+
+        if (!document.cookie) return v;
+
         document.cookie.split(";").forEach(c => {
             c = c.trim();
+
             if (c.startsWith(name + "=")) {
-                v = decodeURIComponent(c.split("=")[1]);
+                v = decodeURIComponent(c.substring(name.length + 1));
             }
         });
+
         return v;
     }
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            closeCheckoutModal();
+            closeConfirmModal();
+        }
+    });
+
+    document.addEventListener("click", function(e) {
+        const checkoutModal = document.getElementById("checkoutModal");
+        const confirmModal = document.getElementById("confirmModal");
+
+        if (checkoutModal && e.target === checkoutModal) {
+            closeCheckoutModal();
+        }
+
+        if (confirmModal && e.target === confirmModal) {
+            closeConfirmModal();
+        }
+    });
 </script>
 {% endblock %}

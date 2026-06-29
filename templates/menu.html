@@ -107,12 +107,17 @@
             color: var(--gold);
         }
 
+        .small-btn:disabled {
+            opacity: 0.65;
+            cursor: default;
+            transform: none;
+        }
+
         .add-cart {
             background: var(--gold);
             color: #111;
             border: none;
         }
-
 
         .add-cart:hover {
             transform: translateY(-2px);
@@ -122,70 +127,283 @@
             border: none;
         }
 
-
         .fav-active {
             background: var(--gold-soft);
             border-color: var(--border-gold);
             color: var(--gold);
         }
 
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 28px;
+        .menu-controls {
+            position: relative;
+            overflow: hidden;
+            padding: 28px;
+            margin-bottom: 42px;
+            border-radius: 34px;
+            border: 1px solid var(--border-gold);
+            background:
+                radial-gradient(circle at top left, rgba(212, 175, 55, 0.18), transparent 34%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.34);
+            backdrop-filter: blur(16px);
         }
 
-        .filter-btn {
+        .menu-controls::after {
+            content: "";
+            position: absolute;
+            right: -140px;
+            top: -140px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.07);
+            pointer-events: none;
+        }
+
+        .controls-head {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .controls-title {
+            font-family: "Playfair Display", serif;
+            font-size: 26px;
+            line-height: 1.15;
+            color: var(--text-primary);
+        }
+
+        .controls-subtitle {
+            margin-top: 6px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .reset-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
             padding: 10px 18px;
             border-radius: 999px;
             border: 1px solid var(--border);
-            background: var(--bg-card);
             color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.035);
             font-size: 13px;
-            cursor: pointer;
-            transition: 0.25s ease;
+            font-weight: 600;
         }
 
-        .filter-btn:hover,
-        .filter-btn.active {
+        .reset-link:hover {
             border-color: var(--gold);
             color: var(--gold);
         }
 
-        .sort-row {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
+        .search-panel {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(260px, 1fr) auto;
+            gap: 12px;
             margin-bottom: 22px;
-        }
-
-        .search-form {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .search-input, .sort-select {
-            padding: 10px 14px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 24px;
+            background: rgba(7, 7, 7, 0.5);
             border: 1px solid var(--border);
-            background: var(--bg-card);
+        }
+
+        .search-field {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-field span {
+            position: absolute;
+            left: 18px;
+            color: var(--gold);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            min-height: 52px;
+            padding: 14px 18px 14px 48px;
+            border-radius: 18px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.045);
             color: var(--text-primary);
-            min-width: 240px;
+            outline: none;
+            font-size: 14px;
+            transition: 0.25s ease;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-input:focus {
+            border-color: var(--border-gold);
+            background: rgba(255, 255, 255, 0.065);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.08);
         }
 
         .search-btn {
-            padding: 10px 14px;
-            border-radius: 10px;
+            min-height: 52px;
+            padding: 0 26px;
+            border-radius: 18px;
+            border: none;
+            background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
+            color: #111;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.18);
+        }
+
+        .control-columns {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 0.72fr 1.28fr;
+            gap: 16px;
+        }
+
+        .control-box {
+            padding: 18px;
+            border-radius: 24px;
+            background: rgba(7, 7, 7, 0.42);
             border: 1px solid var(--border);
+        }
+
+        .control-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .control-label::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-gold), transparent);
+        }
+
+        .chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.035);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--border-gold);
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .filter-chip.active {
+            border-color: var(--gold);
+            color: #111;
+            background: var(--gold);
+            box-shadow: 0 10px 28px rgba(212, 175, 55, 0.14);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 104px;
+            right: 24px;
+            z-index: 3000;
+            display: grid;
+            gap: 12px;
+            width: min(360px, calc(100vw - 32px));
+            pointer-events: none;
+        }
+
+        .toast {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px 16px;
+            border-radius: 18px;
+            border: 1px solid var(--border-gold);
+            background: rgba(17, 17, 17, 0.96);
+            color: var(--text-primary);
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(16px);
+            opacity: 0;
+            transform: translateX(24px);
+            animation: toastIn 0.28s ease forwards;
+        }
+
+        .toast.hide {
+            animation: toastOut 0.25s ease forwards;
+        }
+
+        .toast-icon {
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 26px;
+            border-radius: 50%;
             background: var(--gold);
             color: #111;
-            cursor: pointer;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1.25;
+        }
+
+        .toast-text {
+            margin-top: 2px;
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        .toast.error {
+            border-color: rgba(255, 92, 92, 0.35);
+        }
+
+        .toast.error .toast-icon {
+            background: #ff5c5c;
+            color: #fff;
         }
 
         .empty-state {
@@ -201,12 +419,59 @@
             margin-bottom: 10px;
         }
 
+        @keyframes toastIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes toastOut {
+            to {
+                opacity: 0;
+                transform: translateX(24px);
+            }
+        }
+
+        @media (max-width: 980px) {
+            .control-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
             .menu-grid {
                 grid-template-columns: 1fr;
             }
+
+            .menu-controls {
+                padding: 20px;
+                border-radius: 28px;
+            }
+
+            .controls-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .search-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .toast-container {
+                top: 92px;
+                right: 16px;
+                left: 16px;
+                width: auto;
+            }
         }
     </style>
+
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
     <section class="section">
         <div class="container">
@@ -216,35 +481,66 @@
                 <p>Авторская кухня премиум уровня</p>
             </div>
 
-            <form method="GET" class="search-form">
-                <input type="text"
-                       name="q"
-                       value="{{ query|default:'' }}"
-                       placeholder="Поиск блюда..."
-                       class="search-input">
-                <button type="submit" class="search-btn">Поиск</button>
-            </form>
+            <div class="menu-controls">
+                <div class="controls-head">
+                    <div>
+                        <div class="controls-title">Найдите блюдо под настроение</div>
+                        <div class="controls-subtitle">Поиск, сортировка и категории собраны в одной аккуратной панели.</div>
+                    </div>
 
-            <div class="sort-row">
-                <a href="?{% if query %}q={{ query }}&{% endif %}sort=price_asc"
-                   class="filter-btn {% if sort == 'price_asc' %}active{% endif %}">Цена ↑</a>
-                <a href="?{% if query %}q={{ query }}&{% endif %}sort=price_desc"
-                   class="filter-btn {% if sort == 'price_desc' %}active{% endif %}">Цена ↓</a>
-                <a href="?{% if query %}q={{ query }}&{% endif %}sort=name"
-                   class="filter-btn {% if sort == 'name' %}active{% endif %}">По названию</a>
-                <a href="{% url 'menu' %}" class="filter-btn">Сбросить</a>
-            </div>
+                    <a href="{% url 'menu' %}" class="reset-link">Сбросить всё</a>
+                </div>
 
-            <div class="filters">
-                <a class="filter-btn {% if category == 'all' or not category %}active{% endif %}" href="
-                        {% url 'menu' %}{% if query or sort %}?{% if query %}q={{ query }}&{% endif %}{% if sort %}sort={{ sort }}{% endif %}{% endif %}">Все</a>
-                {% for cat in categories %}
-                    <a class="filter-btn {% if category == cat.slug %}active{% endif %}"
-                       href="?category=
-                               {{ cat.slug }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
-                        {{ cat.name }}
-                    </a>
-                {% endfor %}
+                <form method="GET" class="search-panel">
+                    {% if category and category != 'all' %}
+                        <input type="hidden" name="category" value="{{ category }}">
+                    {% endif %}
+                    {% if sort %}
+                        <input type="hidden" name="sort" value="{{ sort }}">
+                    {% endif %}
+
+                    <label class="search-field">
+                        <span>⌕</span>
+                        <input type="text"
+                               name="q"
+                               value="{{ query|default:'' }}"
+                               placeholder="Введите название блюда, ингредиент или категорию..."
+                               class="search-input">
+                    </label>
+
+                    <button type="submit" class="search-btn">Найти блюдо</button>
+                </form>
+
+                <div class="control-columns">
+                    <div class="control-box">
+                        <div class="control-label">Сортировка</div>
+                        <div class="chip-list">
+                            <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if category and category != 'all' %}category={{ category }}&{% endif %}sort=price_asc"
+                               class="filter-chip {% if sort == 'price_asc' %}active{% endif %}">Цена ↑</a>
+
+                            <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if category and category != 'all' %}category={{ category }}&{% endif %}sort=price_desc"
+                               class="filter-chip {% if sort == 'price_desc' %}active{% endif %}">Цена ↓</a>
+
+                            <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if category and category != 'all' %}category={{ category }}&{% endif %}sort=name"
+                               class="filter-chip {% if sort == 'name' %}active{% endif %}">По названию</a>
+                        </div>
+                    </div>
+
+                    <div class="control-box">
+                        <div class="control-label">Категории</div>
+                        <div class="chip-list">
+                            <a class="filter-chip {% if category == 'all' or not category %}active{% endif %}"
+                               href="{% url 'menu' %}{% if query or sort %}?{% if query %}q={{ query|urlencode }}{% endif %}{% if query and sort %}&{% endif %}{% if sort %}sort={{ sort }}{% endif %}{% endif %}">Все</a>
+
+                            {% for cat in categories %}
+                                <a class="filter-chip {% if category == cat.slug %}active{% endif %}"
+                                   href="?category={{ cat.slug }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
+                                    {{ cat.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="menu-grid">
@@ -317,28 +613,85 @@
             return cookieValue;
         }
 
-        function updateCounters() {
-            fetch("{% url 'cart' %}", {credentials: "same-origin"})
-                .then(() => {
+        function showToast(title, text, type = "success") {
+            const container = document.getElementById("toastContainer");
+            if (!container) return;
+
+            const toast = document.createElement("div");
+            toast.className = `toast ${type === "error" ? "error" : ""}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${type === "error" ? "!" : "✓"}</div>
+                <div>
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-text">${text}</div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add("hide");
+                setTimeout(() => toast.remove(), 260);
+            }, 2600);
+        }
+
+        function refreshHeaderCounters() {
+            if (typeof window.updateCounters === "function") {
+                window.updateCounters();
+                return;
+            }
+
+            fetch("/cart/count/", {credentials: "same-origin"})
+                .then(r => r.json())
+                .then(data => {
+                    const el = document.getElementById("cartCount");
+                    if (el && typeof data.count !== "undefined") el.textContent = data.count;
                 })
-                .catch(() => {
-                });
+                .catch(() => {});
+
+            fetch("/fav/count/", {credentials: "same-origin"})
+                .then(r => r.json())
+                .then(data => {
+                    const el = document.getElementById("favCount");
+                    if (el && typeof data.count !== "undefined") el.textContent = data.count;
+                })
+                .catch(() => {});
         }
 
         document.querySelectorAll(".add-cart").forEach(btn => {
             btn.addEventListener("click", () => {
                 const id = btn.dataset.id;
+                const originalText = btn.textContent.trim();
+
+                btn.disabled = true;
+                btn.textContent = "Добавляем...";
+
                 fetch(`/cart/add/${id}/`, {
                     method: "POST",
                     credentials: "same-origin",
                     headers: {
-                        "X-CSRFToken": getCookie("csrftoken")
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "X-Requested-With": "XMLHttpRequest"
                     }
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (!r.ok) throw new Error("cart_error");
+                        return r.json();
+                    })
                     .then(() => {
                         btn.textContent = "Добавлено";
-                        setTimeout(() => btn.textContent = "В корзину", 900);
+                        showToast("Товар добавлен", "Блюдо успешно добавлено в корзину.");
+                        refreshHeaderCounters();
+                    })
+                    .catch(() => {
+                        btn.textContent = originalText;
+                        showToast("Не удалось добавить", "Проверьте авторизацию или попробуйте ещё раз.", "error");
+                    })
+                    .finally(() => {
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.textContent = originalText;
+                        }, 900);
                     });
             });
         });
@@ -346,24 +699,42 @@
         document.querySelectorAll(".fav-btn").forEach(btn => {
             btn.addEventListener("click", () => {
                 const id = btn.dataset.id;
+
+                btn.disabled = true;
+
                 fetch(`/fav/toggle/${id}/`, {
                     method: "POST",
                     credentials: "same-origin",
                     headers: {
-                        "X-CSRFToken": getCookie("csrftoken")
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "X-Requested-With": "XMLHttpRequest"
                     }
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (!r.ok) throw new Error("fav_error");
+                        return r.json();
+                    })
                     .then(data => {
                         if (data.status === "added") {
                             btn.classList.add("fav-active");
+                            showToast("Добавлено в избранное", "Блюдо сохранено в вашем избранном.");
                         } else {
                             btn.classList.remove("fav-active");
+                            showToast("Удалено из избранного", "Блюдо убрано из избранного.");
                         }
+                        refreshHeaderCounters();
+                    })
+                    .catch(() => {
+                        showToast("Не удалось выполнить действие", "Проверьте авторизацию или попробуйте ещё раз.", "error");
+                    })
+                    .finally(() => {
+                        setTimeout(() => {
+                            btn.disabled = false;
+                        }, 350);
                     });
             });
         });
 
-        document.addEventListener("DOMContentLoaded", updateCounters);
+        document.addEventListener("DOMContentLoaded", refreshHeaderCounters);
     </script>
 {% endblock %}

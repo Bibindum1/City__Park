@@ -3,6 +3,343 @@
 {% block title %}Бронирование • CityPark{% endblock %}
 
 {% block content %}
+<style>
+    .booking-layout {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 70px;
+        align-items: start;
+    }
+
+    .booking-form-card {
+        background:
+            radial-gradient(circle at top left, rgba(212, 175, 55, 0.10), transparent 34%),
+            var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 36px;
+        padding: 60px;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .booking-form-card h3,
+    .side-card h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 30px;
+        color: var(--gold);
+        margin-bottom: 30px;
+    }
+
+    .booking-form {
+        display: grid;
+        gap: 18px;
+    }
+
+    .booking-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .booking-field label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-secondary);
+        font-size: 13px;
+    }
+
+    .booking-field input,
+    .booking-field select,
+    .booking-field textarea {
+        width: 100%;
+        padding: 16px 18px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: var(--bg-deep);
+        color: var(--text-primary);
+        outline: none;
+        font-family: "Inter", sans-serif;
+        transition: 0.25s ease;
+    }
+
+    .booking-field input:focus,
+    .booking-field select:focus,
+    .booking-field textarea:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.10);
+    }
+
+    .booking-field textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .booking-side {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .side-card {
+        background:
+            linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+            var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 32px;
+        padding: 40px;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .info-list {
+        display: grid;
+        gap: 16px;
+    }
+
+    .info-item {
+        display: flex;
+        gap: 14px;
+        color: var(--text-muted);
+        line-height: 1.7;
+    }
+
+    .info-dot {
+        width: 10px;
+        height: 10px;
+        margin-top: 9px;
+        border-radius: 50%;
+        background: var(--gold);
+        box-shadow: 0 0 22px rgba(212, 175, 55, 0.45);
+        flex-shrink: 0;
+    }
+
+    .contacts-card {
+        position: relative;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at top right, rgba(212, 175, 55, 0.18), transparent 34%),
+            linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(0, 0, 0, 0)),
+            var(--bg-card);
+        border: 1px solid var(--border-gold);
+    }
+
+    .contacts-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.045), transparent);
+        transform: translateX(-100%);
+        transition: 0.7s ease;
+        pointer-events: none;
+    }
+
+    .contacts-card:hover::before {
+        transform: translateX(100%);
+    }
+
+    .contact-top {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: flex-start;
+        margin-bottom: 26px;
+        z-index: 1;
+    }
+
+    .contact-top h3 {
+        margin-bottom: 8px;
+    }
+
+    .contact-top p {
+        color: var(--text-muted);
+        line-height: 1.7;
+        max-width: 330px;
+    }
+
+    .contact-badge {
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: var(--gold-soft);
+        border: 1px solid var(--border-gold);
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .contact-list {
+        position: relative;
+        display: grid;
+        gap: 12px;
+        z-index: 1;
+    }
+
+    .contact-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.065);
+        transition: 0.25s ease;
+    }
+
+    .contact-row:hover {
+        border-color: var(--border-gold);
+        transform: translateY(-2px);
+        background: rgba(212, 175, 55, 0.055);
+    }
+
+    .contact-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(212, 175, 55, 0.12);
+        border: 1px solid var(--border-gold);
+        color: var(--gold);
+        flex-shrink: 0;
+    }
+
+    .contact-text span {
+        display: block;
+        color: var(--text-muted);
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+
+    .contact-text strong {
+        color: var(--text-primary);
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .contact-map {
+        position: relative;
+        z-index: 1;
+        margin-top: 18px;
+        min-height: 150px;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background:
+            linear-gradient(135deg, rgba(212, 175, 55, 0.10), rgba(255, 255, 255, 0.02)),
+            url("https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=1400&auto=format&fit=crop") center/cover no-repeat;
+    }
+
+    .contact-map::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.72));
+    }
+
+    .map-caption {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 16px;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .map-caption span {
+        color: var(--gold);
+        font-size: 13px;
+    }
+
+    .booking-toast {
+        position: fixed;
+        top: 104px;
+        right: 24px;
+        z-index: 9999;
+        width: min(390px, calc(100% - 32px));
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        padding: 18px;
+        border-radius: 22px;
+        background:
+            radial-gradient(circle at top left, rgba(212, 175, 55, 0.18), transparent 40%),
+            rgba(17, 17, 17, 0.97);
+        border: 1px solid var(--border-gold);
+        box-shadow: var(--shadow-soft);
+        opacity: 0;
+        transform: translateX(20px);
+        pointer-events: none;
+        transition: 0.25s ease;
+    }
+
+    .booking-toast.show {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+    }
+
+    .toast-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--gold);
+        color: #111;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .toast-content strong {
+        display: block;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+
+    .toast-content span {
+        color: var(--text-muted);
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+        .booking-layout {
+            grid-template-columns: 1fr;
+            gap: 28px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .booking-form-card,
+        .side-card {
+            padding: 28px;
+            border-radius: 28px;
+        }
+
+        .booking-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .contact-top {
+            flex-direction: column;
+        }
+
+        .booking-toast {
+            top: 92px;
+            left: 16px;
+            right: 16px;
+            width: auto;
+        }
+    }
+</style>
+
 <section class="section">
     <div class="container">
         <div class="section-title">
@@ -10,79 +347,43 @@
             <p>Забронируйте стол для особого вечера</p>
         </div>
 
-        <div style="
-            display:grid;
-            grid-template-columns:1.1fr 0.9fr;
-            gap:70px;
-            align-items:start;
-        ">
-            <div style="
-                background:var(--bg-card);
-                border:1px solid var(--border);
-                border-radius:36px;
-                padding:60px;
-                box-shadow:var(--shadow-soft);
-            ">
-                <h3 style="
-                    font-family:'Playfair Display', serif;
-                    font-size:30px;
-                    color:var(--gold);
-                    margin-bottom:30px;
-                ">
-                    Форма бронирования
-                </h3>
+        <div class="booking-layout">
+            <div class="booking-form-card">
+                <h3>Форма бронирования</h3>
 
-                <form method="post" action="" style="display:grid; gap:18px;">
+                <form method="post" action="" class="booking-form" id="bookingForm">
                     {% csrf_token %}
 
-                    <div class="form-group">
-                        <label style="display:block; margin-bottom:8px; color:var(--text-secondary); font-size:13px;">
-                            Ваше имя
-                        </label>
-                        <input type="text" name="full_name" placeholder="Иван Иванов" required
-                               style="width:100%; padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary); outline:none;">
+                    <div class="booking-field">
+                        <label>Ваше имя</label>
+                        <input type="text" name="full_name" placeholder="Иван Иванов" required>
                     </div>
 
-                    <div class="form-group">
-                        <label style="display:block; margin-bottom:8px; color:var(--text-secondary); font-size:13px;">
-                            Телефон
-                        </label>
-                        <input type="tel" name="phone" placeholder="+7 (999) 123-45-67" required
-                               style="width:100%; padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary);">
+                    <div class="booking-field">
+                        <label>Телефон</label>
+                        <input type="tel" name="phone" placeholder="+7 (999) 123-45-67" required>
                     </div>
 
-                    <div class="form-group">
-                        <label style="display:block; margin-bottom:8px; color:var(--text-secondary); font-size:13px;">
-                            Email
-                        </label>
-                        <input type="email" name="email" placeholder="email@example.com"
-                               style="width:100%; padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary);">
+                    <div class="booking-field">
+                        <label>Email</label>
+                        <input type="email" name="email" placeholder="email@example.com">
                     </div>
 
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-                        <div>
-                            <label style="display:block; margin-bottom:8px; color:var(--text-secondary); font-size:13px;">
-                                Дата
-                            </label>
-                            <input type="date" name="booking_date" required
-                                   style="width:100%; padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary);">
+                    <div class="booking-grid">
+                        <div class="booking-field">
+                            <label>Дата</label>
+                            <input type="date" name="booking_date" required>
                         </div>
 
-                        <div>
-                            <label style="display:block; margin-bottom:8px; color:var(--text-secondary); font-size:13px;">
-                                Время
-                            </label>
-                            <input type="time" name="booking_time" required
-                                   style="width:100%; padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary);">
+                        <div class="booking-field">
+                            <label>Время</label>
+                            <input type="time" name="booking_time" required>
                         </div>
                     </div>
 
-                    <div>
-                        <label style="display:block; margin-bottom:8px; color:var(--text-secondary); font-size:13px;">
-                            Количество гостей
-                        </label>
-                        <select name="guests" required
-                                style="width:100%; padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary);">
+                    <div class="booking-field">
+                        <label>Количество гостей</label>
+                        <select name="guests" required>
                             <option value="1">1–2 гостя</option>
                             <option value="3">3–4 гостя</option>
                             <option value="5">5–6 гостей</option>
@@ -90,74 +391,169 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label style="display:block; margin-bottom:8px; color:var(--text-secondary); font-size:13px;">
-                            Особые пожелания
-                        </label>
-                        <textarea name="comment" placeholder="Праздник, аллергии, предпочтения..."
-                                  style="width:100%; min-height:120px; padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary); resize:vertical;"></textarea>
+                    <div class="booking-field">
+                        <label>Особые пожелания</label>
+                        <textarea name="comment" placeholder="Праздник, аллергии, предпочтения..."></textarea>
                     </div>
 
-                    <button class="btn" type="submit" style="margin-top:10px;">
+                    <button class="btn" type="submit" id="bookingSubmitBtn" style="margin-top:10px;">
                         Забронировать стол
                     </button>
                 </form>
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:24px;">
-                <div style="
-                    background:var(--bg-card);
-                    border:1px solid var(--border);
-                    border-radius:32px;
-                    padding:40px;
-                    box-shadow:var(--shadow-soft);
-                ">
-                    <h3 style="
-                        font-family:'Playfair Display', serif;
-                        font-size:24px;
-                        color:var(--gold);
-                        margin-bottom:18px;
-                    ">
-                        Информация
-                    </h3>
+            <div class="booking-side">
+                <div class="side-card">
+                    <h3>Информация</h3>
 
-                    <p style="color:var(--text-muted); margin-bottom:12px; line-height:1.7;">
-                        Бронирование сохраняется 15 минут после времени.
-                    </p>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="info-dot"></span>
+                            <p>Бронирование сохраняется 15 минут после выбранного времени.</p>
+                        </div>
 
-                    <p style="color:var(--text-muted); margin-bottom:12px; line-height:1.7;">
-                        Для групп 6+ гостей требуется подтверждение.
-                    </p>
+                        <div class="info-item">
+                            <span class="info-dot"></span>
+                            <p>Для групп от 6 гостей требуется дополнительное подтверждение.</p>
+                        </div>
 
-                    <p style="color:var(--text-muted); line-height:1.7;">
-                        Отмена возможна за 24 часа до визита.
-                    </p>
+                        <div class="info-item">
+                            <span class="info-dot"></span>
+                            <p>Отмена брони возможна за 24 часа до визита.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div style="
-                    background:linear-gradient(135deg, rgba(212,175,55,0.08), rgba(0,0,0,0));
-                    border:1px solid var(--border-gold);
-                    border-radius:32px;
-                    padding:40px;
-                ">
-                    <h3 style="
-                        font-family:'Playfair Display', serif;
-                        font-size:24px;
-                        color:var(--gold);
-                        margin-bottom:18px;
-                    ">
-                        Контакты
-                    </h3>
+                <div class="side-card contacts-card">
+                    <div class="contact-top">
+                        <div>
+                            <h3>Контакты</h3>
+                            <p>Мы на связи каждый день. Уточните детали брони или задайте вопрос администратору.</p>
+                        </div>
 
-                    <div style="color:var(--text-secondary); line-height:2;">
-                        📍 CityPark Avenue 25<br>
-                        📞 +7 (999) 123-45-67<br>
-                        ✉ booking@citypark.ru<br>
-                        ⏰ 12:00–24:00
+                        <div class="contact-badge">12:00–24:00</div>
+                    </div>
+
+                    <div class="contact-list">
+                        <div class="contact-row">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-text">
+                                <span>Адрес ресторана</span>
+                                <strong>CityPark Avenue 25</strong>
+                            </div>
+                        </div>
+
+                        <div class="contact-row">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-text">
+                                <span>Телефон администратора</span>
+                                <strong>+7 (999) 123-45-67</strong>
+                            </div>
+                        </div>
+
+                        <div class="contact-row">
+                            <div class="contact-icon">✉</div>
+                            <div class="contact-text">
+                                <span>Email для бронирования</span>
+                                <strong>booking@citypark.ru</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-map">
+                        <div class="map-caption">
+                            <div>CityPark Restaurant</div>
+                            <span>Центр города</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-{% endblock %}
+
+<div class="booking-toast" id="bookingToast">
+    <div class="toast-icon">✓</div>
+    <div class="toast-content">
+        <strong id="toastTitle">Стол забронирован</strong>
+        <span id="toastText">Спасибо. Мы свяжемся с вами для подтверждения бронирования.</span>
+    </div>
+</div>
+
+<script>
+    function showBookingToast(title, text) {
+        const toast = document.getElementById("bookingToast");
+        const toastTitle = document.getElementById("toastTitle");
+        const toastText = document.getElementById("toastText");
+
+        if (!toast || !toastTitle || !toastText) return;
+
+        toastTitle.textContent = title;
+        toastText.textContent = text;
+
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3200);
+    }
+
+    const bookingForm = document.getElementById("bookingForm");
+    const bookingSubmitBtn = document.getElementById("bookingSubmitBtn");
+
+    if (bookingForm) {
+        bookingForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            if (bookingSubmitBtn) {
+                bookingSubmitBtn.disabled = true;
+                bookingSubmitBtn.textContent = "Отправляем...";
+            }
+
+            const formData = new FormData(bookingForm);
+            const actionUrl = bookingForm.getAttribute("action") || window.location.href;
+
+            fetch(actionUrl, {
+                method: "POST",
+                body: formData,
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Booking request failed");
+                    }
+
+                    bookingForm.reset();
+
+                    showBookingToast(
+                        "Стол забронирован",
+                        "Спасибо. Мы свяжемся с вами для подтверждения бронирования."
+                    );
+                })
+                .catch(() => {
+                    showBookingToast(
+                        "Не удалось отправить бронь",
+                        "Проверьте данные или попробуйте ещё раз."
+                    );
+                })
+                .finally(() => {
+                    if (bookingSubmitBtn) {
+                        bookingSubmitBtn.disabled = false;
+                        bookingSubmitBtn.textContent = "Забронировать стол";
+                    }
+                });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        {% if messages %}
+            {% for message in messages %}
+                showBookingToast("Уведомление", "{{ message|escapejs }}");
+            {% endfor %}
+        {% endif %}
+    });
+</script>
+{% endblock %}  

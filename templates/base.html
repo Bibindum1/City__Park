@@ -76,6 +76,33 @@
         nav a { font-size: 14px; color: var(--text-secondary); }
         nav a:hover, nav a.active { color: var(--gold); }
 
+        .nav-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, transparent, var(--gold), #f0e6b8, var(--gold), transparent);
+            opacity: 0;
+            transform: translateX(-50%);
+            transition: width 0.28s ease, opacity 0.28s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+            opacity: 1;
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -110,6 +137,12 @@
             font-size: 13px;
         }
 
+        .btn-register:hover {
+            background: rgba(212,175,55,0.20);
+            border-color: var(--gold);
+            transform: translateY(-1px);
+        }
+
         .nav-counter {
             display: inline-flex;
             align-items: center;
@@ -122,13 +155,35 @@
             color: var(--text-secondary);
         }
 
+        .nav-counter:hover {
+            border-color: var(--border-gold);
+            color: var(--gold);
+            background: var(--bg-card-hover);
+        }
+
         .nav-counter span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
             background: var(--gold);
             color: #000;
             border-radius: 50%;
             padding: 2px 7px;
             font-size: 11px;
             font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-counter span.counter-bump {
+            animation: counterBump 0.32s ease;
+        }
+
+        @keyframes counterBump {
+            0% { transform: scale(1); }
+            45% { transform: scale(1.28); }
+            100% { transform: scale(1); }
         }
 
         .section { padding: 90px 0; }
@@ -170,14 +225,17 @@
     <div class="container header-inner">
         <div class="logo">CityPark</div>
         <nav>
-            <a href="{% url 'index' %}" class="{% if active_page == 'index' %}active{% endif %}">Главная</a>
-            <a href="{% url 'menu' %}" class="{% if active_page == 'menu' %}active{% endif %}">Меню</a>
-            <a href="{% url 'booking' %}" class="{% if active_page == 'booking' %}active{% endif %}">Бронирование</a>
-            <a href="{% url 'about' %}" class="{% if active_page == 'about' %}active{% endif %}">О нас</a>
-            <a href="{% url 'wine' %}" class="{% if active_page == 'wine' %}active{% endif %}">Вино</a>
-            <a href="{% url 'contacts' %}" class="{% if active_page == 'contacts' %}active{% endif %}">Контакты</a>
+            <a href="{% url 'index' %}" class="nav-link {% if active_page == 'index' %}active{% endif %}">Главная</a>
+            <a href="{% url 'menu' %}" class="nav-link {% if active_page == 'menu' %}active{% endif %}">Меню</a>
+            <a href="{% url 'booking' %}" class="nav-link {% if active_page == 'booking' %}active{% endif %}">Бронирование</a>
+            <a href="{% url 'about' %}" class="nav-link {% if active_page == 'about' %}active{% endif %}">О нас</a>
+            <a href="{% url 'wine' %}" class="nav-link {% if active_page == 'wine' %}active{% endif %}">Вино</a>
+            <a href="{% url 'contacts' %}" class="nav-link {% if active_page == 'contacts' %}active{% endif %}">Контакты</a>
 
-            <a href="{% url 'registration' %}" class="btn-register">Регистрация</a>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'registration' %}" class="btn-register">Регистрация</a>
+            {% endif %}
+
             <a href="{% url 'cart' %}" class="nav-counter">Корзина <span id="cartCount">0</span></a>
             <a href="{% url 'fav' %}" class="nav-counter">Избранное <span id="favCount">0</span></a>
             <a href="{% url 'profile' %}" class="btn-register">👤</a>
@@ -197,25 +255,121 @@
 
 {% block scripts %}{% endblock %}
 <script>
-function updateCounters() {
-    fetch("/cart/count/")
-        .then(r => r.json())
-        .then(data => {
-            const el = document.getElementById("cartCount");
-            if (el) el.textContent = data.count;
-        })
-        .catch(() => {});
+(function () {
+    const COUNTER_ENDPOINTS = {
+        cart: "/cart/count/",
+        fav: "/fav/count/"
+    };
 
-    fetch("/fav/count/")
-        .then(r => r.json())
-        .then(data => {
-            const el = document.getElementById("favCount");
-            if (el) el.textContent = data.count;
-        })
-        .catch(() => {});
-}
+    function setCounterValue(elementId, value) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
 
-document.addEventListener("DOMContentLoaded", updateCounters);
+        const normalizedValue = Number.isFinite(Number(value)) ? Number(value) : 0;
+        const previousValue = element.textContent;
+
+        element.textContent = normalizedValue;
+
+        if (String(previousValue) !== String(normalizedValue)) {
+            element.classList.remove("counter-bump");
+            void element.offsetWidth;
+            element.classList.add("counter-bump");
+        }
+    }
+
+    async function fetchCounter(type) {
+        const endpoint = COUNTER_ENDPOINTS[type];
+        const elementId = type === "cart" ? "cartCount" : "favCount";
+
+        try {
+            const response = await fetch(endpoint, {
+                cache: "no-store",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+            setCounterValue(elementId, data.count ?? 0);
+        } catch (error) {
+            // Не показываем ошибку пользователю, чтобы не ломать интерфейс.
+        }
+    }
+
+    function updateCounters() {
+        fetchCounter("cart");
+        fetchCounter("fav");
+    }
+
+    function updateCountersWithDelay() {
+        setTimeout(updateCounters, 120);
+        setTimeout(updateCounters, 900);
+    }
+
+    window.updateCounters = updateCounters;
+    window.refreshCounters = updateCounters;
+    window.refreshCartCount = function () { fetchCounter("cart"); };
+    window.refreshFavCount = function () { fetchCounter("fav"); };
+
+    document.addEventListener("DOMContentLoaded", updateCounters);
+    window.addEventListener("pageshow", updateCounters);
+
+    document.addEventListener("cart:updated", function () { fetchCounter("cart"); });
+    document.addEventListener("fav:updated", function () { fetchCounter("fav"); });
+    document.addEventListener("favorites:updated", function () { fetchCounter("fav"); });
+
+    const originalFetch = window.fetch;
+    window.fetch = async function () {
+        const response = await originalFetch.apply(this, arguments);
+
+        try {
+            const request = arguments[0];
+            const options = arguments[1] || {};
+            const url = typeof request === "string" ? request : request.url;
+            const method = String(options.method || request.method || "GET").toUpperCase();
+            const touchesCartOrFav = /\/(cart|fav|favorite|favorites)\//.test(url);
+            const isCounterRequest = /\/(cart|fav)\/count\/?/.test(url);
+
+            if (touchesCartOrFav && !isCounterRequest && method !== "GET") {
+                updateCountersWithDelay();
+            }
+        } catch (error) {
+            // Игнорируем, если запрос не относится к корзине или избранному.
+        }
+
+        return response;
+    };
+
+    const originalOpen = XMLHttpRequest.prototype.open;
+    const originalSend = XMLHttpRequest.prototype.send;
+
+    XMLHttpRequest.prototype.open = function (method, url) {
+        this._cityparkCounterMethod = method;
+        this._cityparkCounterUrl = url;
+        return originalOpen.apply(this, arguments);
+    };
+
+    XMLHttpRequest.prototype.send = function () {
+        this.addEventListener("loadend", function () {
+            try {
+                const url = String(this._cityparkCounterUrl || "");
+                const method = String(this._cityparkCounterMethod || "GET").toUpperCase();
+                const touchesCartOrFav = /\/(cart|fav|favorite|favorites)\//.test(url);
+                const isCounterRequest = /\/(cart|fav)\/count\/?/.test(url);
+
+                if (touchesCartOrFav && !isCounterRequest && method !== "GET") {
+                    updateCountersWithDelay();
+                }
+            } catch (error) {
+                // Игнорируем, если запрос не относится к корзине или избранному.
+            }
+        });
+
+        return originalSend.apply(this, arguments);
+    };
+})();
 </script>
 </body>
 </html>
