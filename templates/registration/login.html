@@ -5,121 +5,154 @@
 {% block content %}
 
 <style>
-    .auth-wrapper {
-        min-height: calc(100vh - 160px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 80px 20px;
-        background: radial-gradient(circle at top, rgba(212,175,55,0.06), transparent 60%);
-    }
+/* WRAPPER */
+.auth-wrapper {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    background: radial-gradient(circle at top, rgba(212,175,55,0.06), transparent 60%);
+}
 
-    .auth-card {
-        width: 100%;
-        max-width: 520px;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 34px;
-        padding: 60px 50px;
-        box-shadow: var(--shadow-soft);
-        transition: 0.35s ease;
-    }
+/* CARD */
+.auth-card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 34px;
+    padding: 60px 50px;
+    box-shadow: var(--shadow-soft);
+    transition: 0.3s ease;
+}
 
+/* DISABLE HEAVY HOVER ON TOUCH */
+@media (hover: hover) {
     .auth-card:hover {
         border-color: var(--border-gold);
         box-shadow: var(--shadow-gold);
         transform: translateY(-2px);
     }
+}
 
-    .auth-title {
-        font-family: "Playfair Display", serif;
-        font-size: 44px;
-        text-align: center;
-        color: var(--gold);
-        margin-bottom: 8px;
-        letter-spacing: -0.5px;
+/* TITLE */
+.auth-title {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(28px, 4vw, 44px);
+    text-align: center;
+    color: var(--gold);
+    margin-bottom: 8px;
+}
+
+/* SUBTITLE */
+.auth-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 35px;
+}
+
+/* FORM */
+.auth-card form p {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.auth-card label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.auth-card input {
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-size: 15px;
+    transition: 0.25s ease;
+}
+
+.auth-card input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
+}
+
+/* ERRORS */
+.auth-card ul.errorlist {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 10px;
+    color: #ff7b7b;
+    font-size: 13px;
+}
+
+/* BUTTON */
+.auth-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
+    color: #0a0a0a;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: var(--shadow-gold);
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 50px rgba(212,175,55,0.25);
+}
+
+/* FOOTER */
+.auth-footer {
+    margin-top: 22px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: var(--gold);
+    text-decoration: none;
+}
+
+/* TABLET */
+@media (max-width: 768px) {
+
+    .auth-card {
+        padding: 40px 26px;
+        border-radius: 26px;
     }
 
-    .auth-subtitle {
-        text-align: center;
-        color: var(--text-muted);
+    .auth-btn {
         font-size: 14px;
-        margin-bottom: 35px;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+
+    .auth-wrapper {
+        padding: 50px 14px;
     }
 
-    /* Django form styling */
-    .auth-card form p {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 18px;
-    }
-
-    .auth-card label {
-        font-size: 13px;
-        color: var(--text-secondary);
-        margin-bottom: 6px;
-    }
-
-    .auth-card input {
-        padding: 14px 16px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: var(--bg-deep);
-        color: var(--text-primary);
-        font-size: 15px;
-        transition: 0.25s ease;
-    }
-
-    .auth-card input:focus {
-        outline: none;
-        border-color: var(--gold);
-        box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
-    }
-
-    .auth-card ul.errorlist {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 10px;
-        color: #ff7b7b;
-        font-size: 13px;
+    .auth-card {
+        padding: 28px 20px;
     }
 
     .auth-btn {
         width: 100%;
-        margin-top: 10px;
-        padding: 14px;
-        border-radius: 999px;
-        border: none;
-        background: linear-gradient(135deg, #d4af37, #f0e6b8, #b8952a);
-        color: #0a0a0a;
-        font-weight: 600;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.25s ease;
-        box-shadow: var(--shadow-gold);
     }
-
-    .auth-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 50px rgba(212,175,55,0.25);
-    }
-
-    .auth-footer {
-        margin-top: 22px;
-        text-align: center;
-        color: var(--text-muted);
-        font-size: 14px;
-    }
-
-    .auth-footer a {
-        color: var(--gold);
-        text-decoration: none;
-        transition: 0.2s;
-    }
-
-    .auth-footer a:hover {
-        color: var(--gold-light);
-    }
+}
 </style>
 
 <section class="auth-wrapper">
@@ -127,7 +160,7 @@
     <div class="auth-card">
 
         <div class="auth-title">Welcome</div>
-        <div class="auth-subtitle">CityPark • Premium Dining Access</div>
+        <div class="auth-subtitle">CityPark • Premium Access</div>
 
         <form method="post">
             {% csrf_token %}

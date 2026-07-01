@@ -11,30 +11,25 @@ User = get_user_model()
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(unique=True, blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True, null=False)
     description = models.TextField(blank=True, null=True)
-
-    class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
-        ordering = ["name"]
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base = slugify(self.name) or f"category-{uuid.uuid4().hex[:8]}"
+            base = slugify(self.name)
+            if not base:
+                base = f"category-{uuid.uuid4().hex[:6]}"
+
             slug = base
             counter = 1
+
             while Category.objects.filter(slug=slug).exclude(pk=self.pk).exists():
                 slug = f"{base}-{counter}"
                 counter += 1
+
             self.slug = slug
 
-        try:
-            with transaction.atomic():
-                super().save(*args, **kwargs)
-        except IntegrityError:
-            self.slug = f"{self.slug}-{uuid.uuid4().hex[:4]}"
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class Dish(models.Model):

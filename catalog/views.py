@@ -2,11 +2,14 @@ import json
 from decimal import Decimal, InvalidOperation
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db import transaction
 
+from restaurant.models import Booking
 from .models import Category, Dish, Order, OrderItem
 
 
@@ -66,74 +69,165 @@ def profile(request):
         .order_by("-created_at")
     )
 
+    orders_count = orders.count()
     total_sum = sum((order.total for order in orders), Decimal("0.00"))
-    avg_check = total_sum / orders.count() if orders.exists() else Decimal("0.00")
+    avg_check = total_sum / orders_count if orders_count else Decimal("0.00")
+
+    paid_orders_count = orders.filter(status__in=["PAID", "COMPLETED", "DONE"]).count()
+    pending_orders_count = orders.filter(status__in=["PENDING", "NEW", "CREATED"]).count()
+    cancelled_orders_count = orders.filter(status__in=["CANCELLED", "CANCELED"]).count()
+
+    bookings = (
+        Booking.objects
+        .filter(user=request.user)
+        .order_by("-booking_date", "-booking_time")
+    )
 
     return render(request, "profile.html", {
         "orders": orders,
+        "orders_count": orders_count,
         "total_sum": total_sum,
-        "avg_check": avg_check,
+        "avg_check": round(avg_check, 2),
+
+        "paid_orders_count": paid_orders_count,
+        "pending_orders_count": pending_orders_count,
+        "cancelled_orders_count": cancelled_orders_count,
+
+        "bookings": bookings,
+        "bookings_count": bookings.count(),
     })
 
-
+@login_required
 def checkout(request):
     if request.method != "POST":
-        return JsonResponse(
-            {"status": "error", "message": "Метод POST обязателен."},
-            status=405,
-        )
+        return JsonResponse({
+            "status": "error",
+            "message": "Метод POST обязателен."
+        }, status=405)
 
     try:
-        data = json.loads(request.body)
-    except json.JSONDecodeError:
-        return JsonResponse(
-            {"status": "error", "message": "Некорректный JSON."},
-            status=400,
-        )
+        if "application/json" in request.content_type:
+            data = json.loads(request.body.decode("utf-8") or "{}")
+        else:
+            data = request.POST
 
-    cart = data.get("cart", [])
+        cart = request.session.get("cart", {})
 
-    if not isinstance(cart, list) or not cart:
-        return JsonResponse({"status": "empty"})
+        if not isinstance(cart, dict) or not cart:
+            return JsonResponse({
+                "status": "error",
+                "message": "Корзина пуста."
+            }, status=400)
 
-    valid_items = []
+        name = str(data.get("name", "")).strip()
+        phone = str(data.get("phone", "")).strip()
+        address = str(data.get("address", "")).strip()
+        delivery_time = str(data.get("delivery_time", "")).strip()
+        payment_method = str(data.get("payment_method", "")).strip()
+        comment = str(data.get("comment", "")).strip()
 
-    for item in cart:
-        try:
-            name = item["name"].strip()
-            price = Decimal(str(item["price"]))
-            quantity = int(item.get("quantity", 1))
-            if quantity > 0:
-                valid_items.append((name, price, quantity))
-        except (KeyError, ValueError, InvalidOperation, TypeError):
-            continue
+        if not name or not phone or not address:
+            return JsonResponse({
+                "status": "error",
+                "message": "Заполните имя, телефон и адрес."
+            }, status=400)
 
-    if not valid_items:
-        return JsonResponse({"status": "empty"})
+        order_field_names = {field.name for field in Order._meta.fields}
 
-    order = Order.objects.create(
-        user=request.user if request.user.is_authenticated else None,
-        total=Decimal("0.00"),
-    )
+        order_kwargs = {
+            "total": Decimal("0.00"),
+        }
 
-    total = Decimal("0.00")
-    for name, price, quantity in valid_items:
-        OrderItem.objects.create(
-            order=order,
-            name=name,
-            price=price,
-            quantity=quantity,
-        )
-        total += price * quantity
+        if "user" in order_field_names:
+            order_kwargs["user"] = request.user
 
-    order.total = total
-    order.save(update_fields=["total"])
+        if "name" in order_field_names:
+            order_kwargs["name"] = name
+        if "customer_name" in order_field_names:
+            order_kwargs["customer_name"] = name
+        if "full_name" in order_field_names:
+            order_kwargs["full_name"] = name
 
-    return JsonResponse({
-        "status": "ok",
-        "order_id": order.id,
-    })
+        if "phone" in order_field_names:
+            order_kwargs["phone"] = phone
 
+        if "address" in order_field_names:
+            order_kwargs["address"] = address
+
+        if "delivery_time" in order_field_names:
+            order_kwargs["delivery_time"] = delivery_time
+
+        if "payment_method" in order_field_names:
+            order_kwargs["payment_method"] = payment_method
+
+        if "comment" in order_field_names:
+            order_kwargs["comment"] = comment
+
+        if "status" in order_field_names:
+            order_kwargs["status"] = "PENDING"
+
+        order_item_field_names = {field.name for field in OrderItem._meta.fields}
+
+        with transaction.atomic():
+            order = Order.objects.create(**order_kwargs)
+
+            total = Decimal("0.00")
+
+            for dish_id, item in cart.items():
+                try:
+                    dish = Dish.objects.get(id=int(dish_id))
+                    quantity = int(item.get("quantity", 1))
+                except (Dish.DoesNotExist, ValueError, TypeError, AttributeError):
+                    continue
+
+                if quantity <= 0:
+                    continue
+
+                price = dish.price
+                total += price * quantity
+
+                item_kwargs = {
+                    "order": order,
+                    "quantity": quantity,
+                }
+
+                if "dish" in order_item_field_names:
+                    item_kwargs["dish"] = dish
+
+                if "name" in order_item_field_names:
+                    item_kwargs["name"] = dish.name
+
+                if "price" in order_item_field_names:
+                    item_kwargs["price"] = price
+
+                if "total" in order_item_field_names:
+                    item_kwargs["total"] = price * quantity
+
+                OrderItem.objects.create(**item_kwargs)
+
+            if total <= 0:
+                return JsonResponse({
+                    "status": "error",
+                    "message": "Не удалось оформить заказ: корзина пуста."
+                }, status=400)
+
+            order.total = total
+            order.save(update_fields=["total"])
+
+        request.session["cart"] = {}
+        request.session.modified = True
+
+        return JsonResponse({
+            "status": "ok",
+            "message": "Заказ успешно оформлен.",
+            "order_id": order.id,
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            "status": "error",
+            "message": f"Ошибка сервера: {type(e).__name__}: {str(e)}"
+        }, status=500)
 
 def add_to_cart(request, dish_id):
     if request.method != "POST":
@@ -160,4 +254,8 @@ def add_to_cart(request, dish_id):
 
 @receiver([post_save, post_delete], sender=OrderItem)
 def update_order_total(sender, instance, **kwargs):
-    instance.order.update_total()
+    if hasattr(instance.order, "update_total"):
+        try:
+            instance.order.update_total()
+        except Exception:
+            pass

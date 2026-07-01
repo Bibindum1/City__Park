@@ -4,82 +4,134 @@
 
 {% block content %}
 
+<style>
+/* CENTER WRAPPER */
+.success-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+/* CARD */
+.success-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 36px;
+    padding: 70px 60px;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+    max-width: 700px;
+    width: 100%;
+}
+
+/* ICON */
+.success-icon {
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    background: rgba(212,175,55,0.12);
+    border: 1px solid var(--border-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 34px;
+}
+
+/* TITLE */
+.success-title {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(28px, 4vw, 42px);
+    color: var(--gold);
+    margin-bottom: 16px;
+}
+
+/* TEXT */
+.success-text {
+    color: var(--text-secondary);
+    font-size: clamp(14px, 2vw, 18px);
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+/* ORDER ID */
+.success-id {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* BUTTON */
+.success-card .btn {
+    display: inline-flex;
+}
+
+/* TABLET */
+@media (max-width: 768px) {
+
+    .success-card {
+        padding: 40px 26px;
+        border-radius: 26px;
+    }
+
+    .success-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+
+    .success-card .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 480px) {
+
+    .success-card {
+        padding: 28px 20px;
+    }
+
+    .success-icon {
+        width: 62px;
+        height: 62px;
+        font-size: 24px;
+    }
+}
+</style>
+
 <section class="section">
 
     <div class="container">
 
-        <div style="
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            min-height:60vh;
-        ">
+        <div class="success-wrapper">
 
-            <div style="
-                background:var(--bg-card);
-                border:1px solid var(--border);
-                border-radius:36px;
-                padding:70px 60px;
-                text-align:center;
-                box-shadow:var(--shadow-soft);
-                max-width:700px;
-                width:100%;
-            ">
+            <div class="success-card">
 
-                <!-- ICON -->
-                <div style="
-                    width:84px;
-                    height:84px;
-                    margin:0 auto 24px;
-                    border-radius:50%;
-                    background:rgba(212,175,55,0.12);
-                    border:1px solid var(--border-gold);
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    color:var(--gold);
-                    font-size:34px;
-                ">
-                    ✓
-                </div>
+                <div class="success-icon">✓</div>
 
-                <!-- TITLE -->
-                <h1 style="
-                    font-family:'Playfair Display', serif;
-                    font-size:42px;
-                    color:var(--gold);
-                    margin-bottom:16px;
-                    letter-spacing:-0.5px;
-                ">
-                    Заказ оформлен
-                </h1>
+                <h1 class="success-title">Заказ оформлен</h1>
 
-                <!-- TEXT -->
-                <p style="
-                    color:var(--text-secondary);
-                    font-size:18px;
-                    line-height:1.7;
-                    margin-bottom:30px;
-                ">
+                <p class="success-text">
                     Спасибо за ваш заказ.<br>
                     Мы уже начали его готовить.
                 </p>
 
-                <!-- ORDER ID -->
-                <div style="
-                    display:inline-block;
-                    padding:12px 20px;
-                    border-radius:999px;
-                    background:var(--bg-deep);
-                    border:1px solid var(--border);
-                    color:var(--text-secondary);
-                    margin-bottom:30px;
-                    font-size:14px;
-                ">
-                    Номер заказа: <span style="color:var(--gold); font-weight:600;">#{{ order_id }}</span>
+                <div class="success-id">
+                    Номер заказа:
+                    <span style="color:var(--gold); font-weight:600;">
+                        #{{ order_id }}
+                    </span>
                 </div>
 
-                <!-- BUTTON -->
                 <div>
                     <a href="{% url 'index' %}" class="btn">
                         Вернуться на главную

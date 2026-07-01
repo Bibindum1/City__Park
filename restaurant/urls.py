@@ -6,7 +6,6 @@ urlpatterns = [
     path("booking/", views.booking_view, name="booking"),
     path("booking/success/<int:booking_id>/", views.booking_success, name="booking_success"),
     path("about/", views.about_view, name="about"),
-    path("wine/", views.wine_view, name="wine"),
     path("contacts/", views.contacts_view, name="contacts"),
 
     path("cart/add/<int:id>/", views.add_to_cart, name="add_to_cart"),

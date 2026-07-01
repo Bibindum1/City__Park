@@ -140,9 +140,8 @@
             margin-bottom: 42px;
             border-radius: 34px;
             border: 1px solid var(--border-gold);
-            background:
-                radial-gradient(circle at top left, rgba(212, 175, 55, 0.18), transparent 34%),
-                linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+            background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.18), transparent 34%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
             box-shadow: 0 18px 60px rgba(0, 0, 0, 0.34);
             backdrop-filter: blur(16px);
         }
@@ -485,7 +484,9 @@
                 <div class="controls-head">
                     <div>
                         <div class="controls-title">Найдите блюдо под настроение</div>
-                        <div class="controls-subtitle">Поиск, сортировка и категории собраны в одной аккуратной панели.</div>
+                        <div class="controls-subtitle">Поиск, сортировка и категории собраны в одной аккуратной
+                            панели.
+                        </div>
                     </div>
 
                     <a href="{% url 'menu' %}" class="reset-link">Сбросить всё</a>
@@ -529,12 +530,14 @@
                     <div class="control-box">
                         <div class="control-label">Категории</div>
                         <div class="chip-list">
-                            <a class="filter-chip {% if category == 'all' or not category %}active{% endif %}"
-                               href="{% url 'menu' %}{% if query or sort %}?{% if query %}q={{ query|urlencode }}{% endif %}{% if query and sort %}&{% endif %}{% if sort %}sort={{ sort }}{% endif %}{% endif %}">Все</a>
+                            <a class="filter-chip {% if not category or category == 'all' %}active{% endif %}"
+                               href="{% url 'menu' %}">
+                                Все
+                            </a>
 
                             {% for cat in categories %}
                                 <a class="filter-chip {% if category == cat.slug %}active{% endif %}"
-                                   href="?category={{ cat.slug }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
+                                   href="{% url 'menu' %}?category={{ cat.slug }}">
                                     {{ cat.name }}
                                 </a>
                             {% endfor %}
@@ -647,7 +650,8 @@
                     const el = document.getElementById("cartCount");
                     if (el && typeof data.count !== "undefined") el.textContent = data.count;
                 })
-                .catch(() => {});
+                .catch(() => {
+                });
 
             fetch("/fav/count/", {credentials: "same-origin"})
                 .then(r => r.json())
@@ -655,7 +659,8 @@
                     const el = document.getElementById("favCount");
                     if (el && typeof data.count !== "undefined") el.textContent = data.count;
                 })
-                .catch(() => {});
+                .catch(() => {
+                });
         }
 
         document.querySelectorAll(".add-cart").forEach(btn => {

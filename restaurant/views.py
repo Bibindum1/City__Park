@@ -1,10 +1,13 @@
+from datetime import date
 from decimal import Decimal
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
+from django.utils.dateparse import parse_date
 
 from catalog.models import Dish, Category
 from restaurant.models import Booking
@@ -14,18 +17,19 @@ def menu_view(request):
     dishes = Dish.objects.select_related("category").all()
     categories = Category.objects.all()
 
-    query = request.GET.get("q")
+    query = (request.GET.get("q") or "").strip()
+    category = request.GET.get("category") or "all"
+    sort = request.GET.get("sort") or ""
+
     if query:
         dishes = dishes.filter(
             Q(name__icontains=query) |
             Q(description__icontains=query)
         )
 
-    category = request.GET.get("category")
-    if category and category != "all":
+    if category != "all":
         dishes = dishes.filter(category__slug=category)
 
-    sort = request.GET.get("sort")
     if sort == "price_asc":
         dishes = dishes.order_by("price")
     elif sort == "price_desc":
@@ -33,19 +37,13 @@ def menu_view(request):
     elif sort == "name":
         dishes = dishes.order_by("name")
 
-    cart = request.session.get("cart", {})
-    favs = request.session.get("favs", [])
-
     return render(request, "menu.html", {
         "dishes": dishes,
         "categories": categories,
         "query": query,
         "category": category,
         "sort": sort,
-        "cart": cart,
-        "favs": favs,
     })
-
 
 @login_required
 @require_POST
@@ -197,23 +195,44 @@ def booking_view(request):
         full_name = request.POST.get("full_name", "").strip()
         phone = request.POST.get("phone", "").strip()
         email = request.POST.get("email", "").strip() or None
-        booking_date = request.POST.get("booking_date")
+        booking_date_raw = request.POST.get("booking_date")
         booking_time = request.POST.get("booking_time")
         guests = request.POST.get("guests", 1)
         comment = request.POST.get("comment", "").strip() or None
 
+        selected_date = parse_date(booking_date_raw)
+
+        if not selected_date:
+            return JsonResponse({
+                "status": "error",
+                "message": "Некорректная дата бронирования."
+            }, status=400)
+
+        if selected_date < date.today():
+            return JsonResponse({
+                "status": "error",
+                "message": "Нельзя забронировать стол на прошедшую дату."
+            }, status=400)
+
         booking = Booking.objects.create(
+            user=request.user if request.user.is_authenticated else None,
             full_name=full_name,
             phone=phone,
             email=email,
-            booking_date=booking_date,
+            booking_date=selected_date,
             booking_time=booking_time,
             guests=int(guests),
             comment=comment,
         )
-        return redirect("booking_success", booking_id=booking.id)
+
+        return JsonResponse({
+            "status": "ok",
+            "message": "Стол забронирован.",
+            "booking_id": booking.id
+        })
 
     return render(request, "booking.html")
+
 
 def cart_count(request):
     cart = request.session.get("cart", {})
@@ -234,11 +253,6 @@ def booking_success(request, booking_id):
 
 def about_view(request):
     return render(request, "about.html")
-
-
-def wine_view(request):
-    return render(request, "wine.html")
-
 
 def contacts_view(request):
     return render(request, "contacts.html")

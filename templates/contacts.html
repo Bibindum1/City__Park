@@ -3,36 +3,137 @@
 {% block title %}Контакты • CityPark{% endblock %}
 
 {% block content %}
+
+<style>
+/* GLOBAL SAFE */
+input, textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* LAYOUT */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 70px;
+    align-items: start;
+}
+
+/* CARD BASE */
+.contact-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 36px;
+    padding: 60px;
+    box-shadow: var(--shadow-soft);
+}
+
+/* TITLE */
+.contact-title {
+    font-family: "Playfair Display", serif;
+    font-size: 30px;
+    color: var(--gold);
+    margin-bottom: 30px;
+}
+
+/* FORM */
+.contact-form {
+    display: grid;
+    gap: 16px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    padding: 16px 18px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    outline: none;
+    transition: 0.25s ease;
+}
+
+.contact-form textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: var(--border-gold);
+    box-shadow: 0 0 0 4px rgba(212,175,55,0.08);
+}
+
+/* RIGHT COLUMN STACK */
+.contact-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* TABLET */
+@media (max-width: 1024px) {
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .contact-card {
+        padding: 40px;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .contact-card {
+        padding: 26px;
+        border-radius: 26px;
+    }
+
+    .contact-title {
+        font-size: 24px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        font-size: 14px;
+        padding: 14px 14px;
+    }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 480px) {
+
+    .contact-card {
+        padding: 20px;
+    }
+
+    .section-title h2 {
+        font-size: 28px;
+    }
+}
+</style>
+
 <section class="section">
+
     <div class="container">
+
         <div class="section-title">
             <h2>Контакты</h2>
             <p>Мы всегда открыты для гостей и предложений</p>
         </div>
 
-        <div style="
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:70px;
-            align-items:start;
-        ">
-            <div style="
-                background:var(--bg-card);
-                border:1px solid var(--border);
-                border-radius:36px;
-                padding:60px;
-                box-shadow:var(--shadow-soft);
-            ">
-                <h3 style="
-                    font-family:'Playfair Display', serif;
-                    font-size:30px;
-                    color:var(--gold);
-                    margin-bottom:30px;
-                ">
-                    Информация
-                </h3>
+        <div class="contact-grid">
+
+            <!-- LEFT INFO -->
+            <div class="contact-card">
+
+                <h3 class="contact-title">Информация</h3>
 
                 <div style="display:grid; gap:18px;">
+
                     <div>
                         <div style="color:var(--gold); font-weight:600; margin-bottom:6px;">Адрес</div>
                         <div style="color:var(--text-secondary); line-height:1.6;">
@@ -42,65 +143,57 @@
                     </div>
 
                     <div>
-                        <div style="color:var(--gold); font-weight:600; margin-bottom:6px;">Телефон</div>
+                        <div style="color:var(--gold); font-weight:600;">Телефон</div>
                         <div style="color:var(--text-secondary);">+7 (999) 123-45-67</div>
                     </div>
 
                     <div>
-                        <div style="color:var(--gold); font-weight:600; margin-bottom:6px;">Email</div>
+                        <div style="color:var(--gold); font-weight:600;">Email</div>
                         <div style="color:var(--text-secondary);">info@citypark.ru</div>
                         <div style="color:var(--text-secondary);">booking@citypark.ru</div>
                     </div>
 
                     <div>
-                        <div style="color:var(--gold); font-weight:600; margin-bottom:6px;">Время работы</div>
+                        <div style="color:var(--gold); font-weight:600;">Время работы</div>
                         <div style="color:var(--text-secondary); line-height:1.6;">
                             Пн–Вс 12:00–24:00<br>
                             Кухня до 23:30
                         </div>
                     </div>
+
                 </div>
+
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:24px;">
-                <div style="
-                    background:var(--bg-card);
-                    border:1px solid var(--border);
-                    border-radius:36px;
-                    padding:60px;
-                    box-shadow:var(--shadow-soft);
-                ">
-                    <h3 style="
-                        font-family:'Playfair Display', serif;
-                        font-size:30px;
-                        color:var(--gold);
-                        margin-bottom:28px;
-                    ">
-                        Написать нам
-                    </h3>
+            <!-- RIGHT FORM -->
+            <div class="contact-right">
 
-                    <form method="post" action="" style="display:grid; gap:16px;">
+                <div class="contact-card">
+
+                    <h3 class="contact-title">Написать нам</h3>
+
+                    <form method="post" action="" class="contact-form">
                         {% csrf_token %}
 
-                        <input type="text" name="name" placeholder="Ваше имя" required
-                               style="padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary);">
+                        <input type="text" name="name" placeholder="Ваше имя" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="tel" name="phone" placeholder="Телефон">
 
-                        <input type="email" name="email" placeholder="Email" required
-                               style="padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary);">
-
-                        <input type="tel" name="phone" placeholder="Телефон"
-                               style="padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary);">
-
-                        <textarea name="message" placeholder="Сообщение" required
-                                  style="padding:16px 18px; border-radius:16px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text-primary); min-height:140px;"></textarea>
+                        <textarea name="message" placeholder="Сообщение" required></textarea>
 
                         <button class="btn" type="submit">
                             Отправить сообщение
                         </button>
                     </form>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </section>
+
 {% endblock %}

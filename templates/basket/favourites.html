@@ -174,9 +174,89 @@
     box-shadow: 0 14px 35px rgba(212,175,55,0.35);
 }
 
+@media (max-width: 1024px) {
+
+    .fav-page {
+        padding: 60px 0;
+    }
+
+    .fav-grid {
+        gap: 18px;
+    }
+}
+
 @media (max-width: 768px) {
+
+    .fav-title {
+        font-size: clamp(30px, 6vw, 44px);
+    }
+
+    .fav-subtitle {
+        font-size: 14px;
+        margin-bottom: 35px;
+    }
+
+    .fav-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .fav-card {
+        border-radius: 20px;
+    }
+
+    .fav-img {
+        height: 180px;
+    }
+
     .btn-row {
         flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .fav-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .fav-page {
+        padding: 40px 0;
+    }
+
+    .fav-title {
+        font-size: 32px;
+    }
+
+    .fav-img {
+        height: 160px;
+    }
+
+    .fav-content {
+        padding: 14px;
+    }
+
+    .fav-name {
+        font-size: 18px;
+    }
+
+    .fav-desc {
+        font-size: 12px;
+    }
+
+    .fav-price {
+        font-size: 16px;
+    }
+
+    .fav-cta a {
+        width: 100%;
+        text-align: center;
+        padding: 14px;
     }
 }
 </style>
